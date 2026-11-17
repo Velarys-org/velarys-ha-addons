@@ -1,0 +1,15 @@
+configuration:
+  central_url:
+    name: Adresse du central
+    description: Laisser la valeur par défaut, sauf indication de Velarys.
+  enrollment_code:
+    name: Code d’enrôlement
+    description: Code à usage unique fourni par Velarys. Il est retiré automatiquement une fois utilisé.
+  hub_name:
+    name: Nom du hub
+    description: Facultatif, par exemple « Résidence principale ». Ni adresse ni nom de famille.
+  heartbeat_interval:
+    name: Intervalle de battement (secondes)
+    description: Le central peut en imposer un autre.
+  log_level:
+    name: Niveau de journal

@@ -1,0 +1,41 @@
+# AGENTS.md
+
+Dépôt **public** des add-ons Home Assistant de Velarys. Aujourd'hui un seul add-on, `velarys/` :
+l'agent qui enrôle le hub auprès du central Velarys et lui envoie un battement de cœur signé.
+
+## Mémoire générale (hors dépôt)
+
+Le cadrage (décisions, usecases, pourquoi) vit dans la documentation interne de Velarys, hors de ce
+dépôt public. Son emplacement est donné par `CLAUDE.local.md`, non versionné. Ne rien en recopier
+ici : ce dépôt ne porte ni chemin local, ni infrastructure, ni donnée client.
+
+## Règles qui ne se discutent pas
+
+- **Rien de secret dans ce dépôt** : il est public. La sécurité tient aux clés, jamais au code.
+- **Le contrat appartient au central.** `velarys/vendor/hub-api/` est généré par le dépôt privé
+  `velarys-central` (`yarn vendor:hub-api`). Ne jamais l'éditer ici : changer le contrat côté
+  central, revendoriser, commiter les deux.
+- **Le battement ne porte que de l'état technique.** Jamais de présence, caméra, serrure, calendrier,
+  historique ni journal. Un nouveau champ = une nouvelle version de schéma côté central.
+- **La clé privée ne sort pas du hub** : `/data/identity/` est exclu des sauvegardes
+  (`backup_exclude` dans `config.yaml`, deux motifs car le Supervisor compare au chemin complet).
+- **Aucun port ouvert**, uniquement du HTTPS sortant vers le central.
+
+## Développement
+
+Dans `velarys/` : Yarn 4 (`nodeLinker: node-modules`), Node 24, TypeScript, Vitest.
+
+- `yarn test` : l'agent contre un faux central qui vérifie réellement les signatures.
+- `yarn typecheck`, `yarn build`.
+- Essai hors Home Assistant : `DATA_DIR`, `SUPERVISOR_URL` et `SUPERVISOR_TOKEN` surchargent `/data`
+  et l'API Supervisor.
+
+## Publication
+
+Augmenter `version` dans `velarys/config.yaml` (et `package.json`, `CHANGELOG.md`) puis pousser sur
+`main` : `.github/workflows/builder.yaml` construit l'image amd64 et aarch64 avec les actions
+`home-assistant/builder`, puis le manifeste multi-arch `ghcr.io/velarys-org/velarys-ha-addon`. Une
+version déjà publiée n'est jamais reconstruite. **Le package GHCR doit rester public**, sinon les
+hubs ne peuvent pas le tirer.
+
+Git : commit direct sur `main`, pas de branche.

@@ -1,0 +1,33 @@
+name: Velarys
+version: "0.1.0"
+slug: velarys
+description: Supervision Velarys de votre installation (battement de cœur signé vers le central Velarys)
+url: https://github.com/Velarys-org/velarys-ha-addons/tree/main/velarys
+arch:
+  - aarch64
+  - amd64
+image: ghcr.io/velarys-org/velarys-ha-addon
+startup: services
+boot: auto
+# Lecture de l'état (versions, santé) et du proxy de Core pour savoir si Home Assistant répond.
+hassio_api: true
+hassio_role: default
+homeassistant_api: true
+# La clé privée du hub ne part jamais dans une sauvegarde : une restauration demande un nouvel
+# enrôlement, et une sauvegarde restaurée sur une autre machine ne clone pas l'identité.
+# Le Supervisor compare chaque motif au chemin complet (PurePath.match), d'où les deux formes.
+backup_exclude:
+  - identity
+  - identity/*
+options:
+  central_url: https://hub.velarys.fr
+  enrollment_code: ""
+  hub_name: ""
+  heartbeat_interval: 300
+  log_level: info
+schema:
+  central_url: url
+  enrollment_code: str?
+  hub_name: str?
+  heartbeat_interval: int(60,3600)
+  log_level: list(debug|info|warning|error)
