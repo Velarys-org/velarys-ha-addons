@@ -13,6 +13,19 @@ export interface HostFacts {
   uptimeSec: number | null;
 }
 
+/**
+ * Durée de fonctionnement de l'hôte. `boot_timestamp` (microsecondes) vaut 0 sur certaines
+ * installations (constaté sur HAOS 18.4 en VM) : on se rabat alors sur l'uptime du noyau, que le
+ * conteneur partage avec l'hôte.
+ */
+export function hostUptimeSec(bootTimestampUs: number | undefined, nowMs = Date.now(), kernelUptimeSec = uptime()): number {
+  if (typeof bootTimestampUs === 'number' && bootTimestampUs > 0) {
+    const sec = Math.round(nowMs / 1000 - bootTimestampUs / 1e6);
+    if (sec >= 0) return sec;
+  }
+  return Math.round(kernelUptimeSec);
+}
+
 /** Client minimal de l'API Supervisor (`http://supervisor`, jeton SUPERVISOR_TOKEN). */
 export class SupervisorClient {
   constructor(
@@ -65,8 +78,6 @@ export class SupervisorClient {
       this.data<{ hostname?: string | null; boot_timestamp?: number }>('/host/info'),
       this.homeAssistantReachable(),
     ]);
-    const boot = host?.boot_timestamp;
-    const uptimeSec = typeof boot === 'number' ? Math.max(0, Math.round(Date.now() / 1000 - boot / 1e6)) : Math.round(uptime());
     return {
       haReachable: reachable,
       haVersion: core?.version ?? null,
@@ -75,9 +86,10 @@ export class SupervisorClient {
       osVersion: os?.version ?? null,
       arch: sup?.arch ?? core?.arch ?? process.arch,
       hostname: host?.hostname ?? null,
-      uptimeSec,
+      uptimeSec: hostUptimeSec(host?.boot_timestamp),
     };
   }
+
 
   /**
    * Retire le code d'enrôlement des options une fois utilisé. Les options sont remplacées en bloc,

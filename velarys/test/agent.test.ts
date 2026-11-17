@@ -200,3 +200,15 @@ describe('agent', () => {
     expect(again.state.identity!.hubId).toBe('hub-1');
   });
 });
+
+describe('durée de fonctionnement', () => {
+  it('ignore un boot_timestamp nul et se rabat sur l’uptime du noyau', async () => {
+    const { hostUptimeSec } = await import('../src/supervisor.js');
+    const now = Date.UTC(2026, 10, 17, 12);
+    expect(hostUptimeSec(0, now, 1693.9)).toBe(1694);
+    expect(hostUptimeSec(undefined, now, 42)).toBe(42);
+    expect(hostUptimeSec((now - 3600_000) * 1000, now, 1)).toBe(3600);
+    // Horodatage dans le futur (horloge pas encore synchronisée) : noyau.
+    expect(hostUptimeSec((now + 60_000) * 1000, now, 5)).toBe(5);
+  });
+});
