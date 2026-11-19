@@ -1,8 +1,20 @@
 # Velarys
 
 Cet add-on prévient Velarys quand votre installation Home Assistant tombe en panne, souvent avant
-que vous ne le remarquiez. Il fait partie de la maintenance assurée par
-[Velarys](https://velarys.fr), installateur domotique à Annecy.
+que vous ne le remarquiez.
+
+## Qui est Velarys
+
+[Velarys](https://velarys.fr) conçoit, installe et entretient des installations domotiques sur
+mesure en Haute-Savoie et en Savoie, d'Annecy au Mont-Blanc : chauffage, volets, éclairage,
+sécurité, résidences secondaires. Ses installations reposent sur Home Assistant et tournent en
+local, sans abonnement cloud obligatoire, et les données restent dans le logement.
+
+Si l'on vous a demandé d'installer cet add-on, c'est que Velarys a posé votre installation ou en
+assure la maintenance. Il en fait partie : il permet à Velarys de veiller sur votre système sans
+venir sur place.
+
+*L'automatisme invisible.*
 
 ## Comment ça marche
 
@@ -38,8 +50,12 @@ pas à pas est dans l'onglet **Documentation**.
 ## In English
 
 This add-on alerts Velarys when your Home Assistant installation goes down, often before you
-notice. It is part of the maintenance provided by [Velarys](https://velarys.fr), a home automation
-installer based in Annecy, France.
+notice.
+
+[Velarys](https://velarys.fr) designs, installs and maintains bespoke home automation in the French
+Alps, from Annecy to Mont Blanc. Its installations run on Home Assistant, locally, with no
+mandatory cloud subscription, and your data stays in your home. If you were asked to install this
+add-on, Velarys set up or maintains your system: the add-on lets it keep an eye on it remotely.
 
 Every five minutes it sends Velarys a sign of life holding only technical state: software versions,
 whether Home Assistant responds, and uptime. Nothing about life in your home ever leaves it: no
