@@ -20,6 +20,12 @@ ici : ce dépôt ne porte ni chemin local, ni infrastructure, ni donnée client.
 - **La clé privée ne sort pas du hub** : `/data/identity/` est exclu des sauvegardes
   (`backup_exclude` dans `config.yaml`, deux motifs car le Supervisor compare au chemin complet).
 - **Aucun port ouvert**, uniquement du HTTPS sortant vers le central.
+- **`velarys/apparmor.txt` confine l'agent** (note de sécurité 8/8) : lecture de `/app`, écriture dans
+  `/data` seulement, aucun programme lancé hors Node, d'où l'`ENTRYPOINT` direct du `Dockerfile` (sans
+  le `docker-entrypoint.sh` de l'image, qui passe par un shell). Toute fonction qui touche un nouveau
+  fichier, lance un programme ou ouvre un autre type de connexion se teste d'abord sur la VM avec
+  `complain` dans les flags du profil, en lisant les lignes `apparmor="ALLOWED"` du journal `audit`
+  de l'hôte (`ha host logs -t audit`), puis sans.
 - **`velarys/DOCS.md` a un double sur le site velarys.fr** : la page de suivi envoyée aux clients
   (dépôt du site, `src/i18n/pages/suivi.js`, en français et en anglais). Une évolution qui change ce
   que dit `DOCS.md` (données envoyées, options, installation, sauvegardes) se reporte aussi là-bas.

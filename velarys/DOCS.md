@@ -67,4 +67,5 @@ désinstaller l'add-on.
 ## Réseau
 
 L'add-on n'ouvre aucun port. Il émet seulement des requêtes HTTPS sortantes vers
-`hub.velarys.fr`, signées par la clé de l'installation.
+`hub.velarys.fr`, signées par la clé de l'installation. Un profil AppArmor le limite en plus à ses
+propres fichiers et à ces connexions : même détourné, il ne pourrait lancer aucun autre programme.

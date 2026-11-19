@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.4
+
+- Profil AppArmor propre à l'add-on : il ne peut lire que ses fichiers, écrire que dans son
+  dossier de données et lancer aucun autre programme. Note de sécurité Home Assistant : 8 sur 8.
+- Node démarré directement, sans le script d'entrée de l'image de base.
+
 ## 0.1.3
 
 - Logo de la fiche : le mot « Velarys » sur la pastille dégradée de l'icône.
