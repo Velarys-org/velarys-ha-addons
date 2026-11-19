@@ -1,4 +1,4 @@
-# Velarys
+# Suivi et Maintenance Velarys
 
 Cet add-on prévient Velarys quand votre installation Home Assistant tombe en panne, souvent avant
 que vous ne le remarquiez.

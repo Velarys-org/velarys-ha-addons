@@ -6,7 +6,7 @@ Dépôt d'add-ons de [Velarys](https://velarys.fr), installateur domotique à An
 
 | Add-on | Rôle |
 |---|---|
-| [Velarys](velarys/) | Suivi de l'installation : battement de cœur signé vers le central Velarys. |
+| [Suivi et Maintenance Velarys](velarys/) | Suivi de l'installation : battement de cœur signé vers le central Velarys. |
 
 Ces add-ons demandent Home Assistant OS (Supervisor).
 
