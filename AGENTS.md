@@ -20,6 +20,10 @@ ici : ce dépôt ne porte ni chemin local, ni infrastructure, ni donnée client.
 - **La clé privée ne sort pas du hub** : `/data/identity/` est exclu des sauvegardes
   (`backup_exclude` dans `config.yaml`, deux motifs car le Supervisor compare au chemin complet).
 - **Aucun port ouvert**, uniquement du HTTPS sortant vers le central.
+- **`velarys/DOCS.md` a un double sur le site velarys.fr** : la page de suivi envoyée aux clients
+  (dépôt du site, `src/i18n/pages/suivi.js`, en français et en anglais). Une évolution qui change ce
+  que dit `DOCS.md` (données envoyées, options, installation, sauvegardes) se reporte aussi là-bas.
+  Ne pas écrire l'URL de cette page ici : elle n'est liée de nulle part, et ce dépôt est public.
 
 ## Développement
 

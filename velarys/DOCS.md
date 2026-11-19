@@ -25,11 +25,17 @@ central refuse tout champ qui n'y figure pas.
 
 ## Installation
 
-1. Dans Home Assistant, **Paramètres > Modules complémentaires > Boutique**, menu en haut à droite,
-   **Dépôts**, puis ajouter `https://github.com/Velarys-org/velarys-ha-addons`.
-2. Installer l'add-on **Velarys**.
-3. Dans l'onglet **Configuration**, saisir le **code d'enrôlement** fourni par Velarys.
-4. Démarrer l'add-on.
+1. Dans Home Assistant, **Paramètres > Applications > Installer une application**, menu ⋮ en haut
+   à droite, **Dépôts**, puis **Ajouter** `https://github.com/Velarys-org/velarys-ha-addons`.
+2. Dans le magasin d'applications, ouvrir **Velarys** et cliquer sur **Installer**.
+3. Dans l'onglet **Configuration**, saisir le **code d'enrôlement** fourni par Velarys, puis
+   enregistrer.
+4. Dans l'onglet **Info**, activer **Chien de garde** (relance l'add-on s'il s'arrête) et
+   **Mise à jour automatique**, laisser **Lancer au démarrage** activé, puis cliquer sur
+   **Démarrer**. L'onglet **Journal** confirme l'enrôlement.
+
+Depuis Home Assistant 2026, les « modules complémentaires » s'appellent des « applications »
+(*Apps*) dans l'interface.
 
 L'add-on crée alors l'identité de votre installation : une clé générée sur place, qui ne quitte
 jamais votre logement. Le code est retiré de la configuration dès qu'il a servi. Il n'est valable
