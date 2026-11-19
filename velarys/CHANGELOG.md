@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.3
+
+- Logo de la fiche : le mot « Velarys » sur la pastille dégradée de l'icône.
+- Le lien « Visitez la page » mène à la page de suivi de velarys.fr.
+
 ## 0.1.2
 
 - Nom raccourci en « Suivi et Maintenance » : le magasin d'applications le range déjà sous le dépôt Velarys.

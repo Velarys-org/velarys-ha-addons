@@ -23,7 +23,8 @@ ici : ce dépôt ne porte ni chemin local, ni infrastructure, ni donnée client.
 - **`velarys/DOCS.md` a un double sur le site velarys.fr** : la page de suivi envoyée aux clients
   (dépôt du site, `src/i18n/pages/suivi.js`, en français et en anglais). Une évolution qui change ce
   que dit `DOCS.md` (données envoyées, options, installation, sauvegardes) se reporte aussi là-bas.
-  Ne pas écrire l'URL de cette page ici : elle n'est liée de nulle part, et ce dépôt est public.
+  Son URL française est le `url:` de `config.yaml` (lien « Visitez la page » de l'onglet Info), à la
+  demande d'Arnaud le 2026-11-19 : elle est donc publique via ce dépôt, mais reste noindex côté site.
 
 ## Développement
 
