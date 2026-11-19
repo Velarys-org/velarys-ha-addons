@@ -12,7 +12,8 @@ Toutes les cinq minutes environ, un « battement de cœur » qui contient unique
 - la version du Supervisor, et s'il se déclare en bonne santé ;
 - la version de Home Assistant OS ;
 - depuis combien de temps la machine est démarrée ;
-- la version de l'add-on.
+- la version de l'add-on, et s'il est réglé pour redémarrer seul (chien de garde), se mettre à jour
+  et démarrer avec la machine.
 
 C'est le silence qui alerte : si les battements cessent, Velarys sait que l'installation ne
 répond plus.
@@ -33,7 +34,8 @@ central refuse tout champ qui n'y figure pas.
    enregistrer.
 4. Dans l'onglet **Info**, activer **Chien de garde** (relance l'add-on s'il s'arrête) et
    **Mise à jour automatique**, laisser **Lancer au démarrage** activé, puis cliquer sur
-   **Démarrer**. L'onglet **Journal** confirme l'enrôlement.
+   **Démarrer**. L'onglet **Journal** confirme l'enrôlement. Velarys voit ces trois réglages à
+   distance.
 
 Depuis Home Assistant 2026, les « modules complémentaires » s'appellent des « applications »
 (*Apps*) dans l'interface.

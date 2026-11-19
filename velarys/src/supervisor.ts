@@ -11,6 +11,21 @@ export interface HostFacts {
   arch: string;
   hostname: string | null;
   uptimeSec: number | null;
+  /** Réglages de l'add-on lui-même (onglet Info) ; `null` = le Supervisor n'a pas répondu. */
+  addonWatchdog: boolean | null;
+  addonAutoUpdate: boolean | null;
+  addonBoot: 'auto' | 'manual' | null;
+}
+
+/** Réglages lus dans `/addons/self/info` ; toute valeur inattendue devient inconnue (`null`). */
+export function addonSettings(
+  info: { watchdog?: unknown; auto_update?: unknown; boot?: unknown } | null,
+): Pick<HostFacts, 'addonWatchdog' | 'addonAutoUpdate' | 'addonBoot'> {
+  return {
+    addonWatchdog: typeof info?.watchdog === 'boolean' ? info.watchdog : null,
+    addonAutoUpdate: typeof info?.auto_update === 'boolean' ? info.auto_update : null,
+    addonBoot: info?.boot === 'auto' || info?.boot === 'manual' ? info.boot : null,
+  };
 }
 
 /**
@@ -71,11 +86,12 @@ export class SupervisorClient {
   }
 
   async facts(): Promise<HostFacts> {
-    const [core, sup, os, host, reachable] = await Promise.all([
+    const [core, sup, os, host, self, reachable] = await Promise.all([
       this.data<{ version?: string; arch?: string }>('/core/info'),
       this.data<{ version?: string; healthy?: boolean; arch?: string }>('/supervisor/info'),
       this.data<{ version?: string }>('/os/info'),
       this.data<{ hostname?: string | null; boot_timestamp?: number }>('/host/info'),
+      this.data<{ watchdog?: unknown; auto_update?: unknown; boot?: unknown }>('/addons/self/info'),
       this.homeAssistantReachable(),
     ]);
     return {
@@ -87,6 +103,7 @@ export class SupervisorClient {
       arch: sup?.arch ?? core?.arch ?? process.arch,
       hostname: host?.hostname ?? null,
       uptimeSec: hostUptimeSec(host?.boot_timestamp),
+      ...addonSettings(self),
     };
   }
 

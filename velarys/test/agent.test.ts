@@ -27,6 +27,9 @@ const FACTS: HostFacts = {
   arch: 'amd64',
   hostname: 'homeassistant',
   uptimeSec: 4242,
+  addonWatchdog: true,
+  addonAutoUpdate: true,
+  addonBoot: 'auto',
 };
 
 /** Faux central : vérifie vraiment les signatures avec le contrat vendorisé, puis répond selon le scénario. */
@@ -118,6 +121,13 @@ describe('battement', () => {
   it('respecte le contrat v1', () => {
     expect(Value.Check(HeartbeatV1, buildHeartbeat(FACTS, '0.1.0'))).toBe(true);
     expect(Value.Check(HeartbeatV1, buildHeartbeat({ ...FACTS, haReachable: false, haVersion: null, osVersion: null, uptimeSec: null }, '0.1.0'))).toBe(true);
+    const unknown = { ...FACTS, addonWatchdog: null, addonAutoUpdate: null, addonBoot: null };
+    expect(Value.Check(HeartbeatV1, buildHeartbeat(unknown, '0.1.0'))).toBe(true);
+  });
+
+  it('joint les réglages de l’add-on au battement', () => {
+    const beat = buildHeartbeat({ ...FACTS, addonAutoUpdate: false, addonBoot: 'manual' }, '0.1.5');
+    expect(beat.addon).toEqual({ watchdog: true, autoUpdate: false, boot: 'manual' });
   });
 
   it('étale les battements et plafonne les nouvelles tentatives', () => {
@@ -210,5 +220,23 @@ describe('durée de fonctionnement', () => {
     expect(hostUptimeSec((now - 3600_000) * 1000, now, 1)).toBe(3600);
     // Horodatage dans le futur (horloge pas encore synchronisée) : noyau.
     expect(hostUptimeSec((now + 60_000) * 1000, now, 5)).toBe(5);
+  });
+});
+
+describe('réglages de l’add-on', () => {
+  it('lit /addons/self/info et rend inconnu ce qui manque ou surprend', async () => {
+    const { addonSettings } = await import('../src/supervisor.js');
+    expect(addonSettings({ watchdog: true, auto_update: false, boot: 'auto' })).toEqual({
+      addonWatchdog: true,
+      addonAutoUpdate: false,
+      addonBoot: 'auto',
+    });
+    // Supervisor muet : tout est inconnu, le battement part quand même.
+    expect(addonSettings(null)).toEqual({ addonWatchdog: null, addonAutoUpdate: null, addonBoot: null });
+    expect(addonSettings({ watchdog: 'yes', boot: 'sometimes' })).toEqual({
+      addonWatchdog: null,
+      addonAutoUpdate: null,
+      addonBoot: null,
+    });
   });
 });

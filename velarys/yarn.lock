@@ -391,12 +391,12 @@ __metadata:
   linkType: hard
 
 "@velarys/hub-api@file:./vendor/hub-api::locator=velarys-ha-addon%40workspace%3A.":
-  version: 0.1.0
-  resolution: "@velarys/hub-api@file:./vendor/hub-api#./vendor/hub-api::hash=6a9ab3&locator=velarys-ha-addon%40workspace%3A."
+  version: 0.2.0
+  resolution: "@velarys/hub-api@file:./vendor/hub-api#./vendor/hub-api::hash=2da206&locator=velarys-ha-addon%40workspace%3A."
   dependencies:
     http-message-signatures: "npm:1.0.6"
     typebox: "npm:^1.4.7"
-  checksum: 10c0/8526eb135957a4eb77b932ee2d9c175f128d3e4ea2bbacefa2c1854732da339c20245d3137a99ac748d1f0df6e3ffc6a8ab1f1332face56fb58f3c789d4cdddc
+  checksum: 10c0/08edcfb6f82777a62ef73ab83b9923290fc3fefc7256d4d7e877e9d56d08af44e30375dffe5993a05d2c5bf1c251e5564ebb0f206b7274c701d4ea47e924bf80
   languageName: node
   linkType: hard
 

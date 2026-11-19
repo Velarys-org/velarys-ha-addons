@@ -16,7 +16,9 @@ ici : ce dépôt ne porte ni chemin local, ni infrastructure, ni donnée client.
   `velarys-central` (`yarn vendor:hub-api`). Ne jamais l'éditer ici : changer le contrat côté
   central, revendoriser, commiter les deux.
 - **Le battement ne porte que de l'état technique.** Jamais de présence, caméra, serrure, calendrier,
-  historique ni journal. Un nouveau champ = une nouvelle version de schéma côté central.
+  historique ni journal. Un nouveau champ s'ajoute d'abord au contrat côté central, en facultatif
+  dans le schéma en cours (retrait ou renommage = nouveau schéma), et **le central est déployé avant
+  de publier l'add-on** : l'ancien central refuserait le champ et le hub paraîtrait muet.
 - **La clé privée ne sort pas du hub** : `/data/identity/` est exclu des sauvegardes
   (`backup_exclude` dans `config.yaml`, deux motifs car le Supervisor compare au chemin complet).
 - **Aucun port ouvert**, uniquement du HTTPS sortant vers le central.

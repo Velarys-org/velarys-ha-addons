@@ -48,6 +48,7 @@ export function buildHeartbeat(facts: HostFacts, agentVersion: string, now = new
     supervisor: { version: facts.supervisorVersion, healthy: facts.supervisorHealthy },
     os: { version: facts.osVersion },
     host: { uptimeSec: facts.uptimeSec },
+    addon: { watchdog: facts.addonWatchdog, autoUpdate: facts.addonAutoUpdate, boot: facts.addonBoot },
   };
 }
 

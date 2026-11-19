@@ -54,6 +54,18 @@ export declare const HeartbeatV1: Type.TObject<{
     host: Type.TObject<{
         uptimeSec: Type.TUnion<[Type.TInteger, Type.TNull]>;
     }>;
+    /**
+     * Réglages de l'add-on lui-même, ceux de son onglet Info (contrat 0.2.0). Facultatif : absent =
+     * inconnu (agent 0.1.4 et antérieurs) ; `null` = le Supervisor n'a pas répondu.
+     */
+    addon: Type.TOptional<Type.TObject<{
+        /** « Chien de garde » : le Supervisor relance l'add-on s'il s'arrête. */
+        watchdog: Type.TUnion<[Type.TBoolean, Type.TNull]>;
+        /** « Mise à jour automatique » de l'add-on (pas celle de HA ni de l'OS). */
+        autoUpdate: Type.TUnion<[Type.TBoolean, Type.TNull]>;
+        /** « Lancer au démarrage » : `auto` = l'add-on repart avec la machine. */
+        boot: Type.TUnion<[Type.TLiteral<"auto">, Type.TLiteral<"manual">, Type.TNull]>;
+    }>>;
 }>;
 export type HeartbeatV1 = Type.Static<typeof HeartbeatV1>;
 export declare const HeartbeatResponse: Type.TObject<{

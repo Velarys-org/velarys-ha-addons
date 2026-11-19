@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.5
+
+- Le battement indique si le chien de garde, la mise à jour automatique et le lancement au
+  démarrage de l'add-on sont activés, pour que Velarys repère un réglage oublié à l'installation.
+
 ## 0.1.4
 
 - Profil AppArmor propre à l'add-on : il ne peut lire que ses fichiers, écrire que dans son

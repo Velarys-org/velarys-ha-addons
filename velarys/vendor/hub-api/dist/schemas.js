@@ -44,6 +44,18 @@ export const HeartbeatV1 = Type.Object({
     }, { additionalProperties: false }),
     os: Type.Object({ version: NullableVersion }, { additionalProperties: false }),
     host: Type.Object({ uptimeSec: Type.Union([Type.Integer({ minimum: 0 }), Type.Null()]) }, { additionalProperties: false }),
+    /**
+     * Réglages de l'add-on lui-même, ceux de son onglet Info (contrat 0.2.0). Facultatif : absent =
+     * inconnu (agent 0.1.4 et antérieurs) ; `null` = le Supervisor n'a pas répondu.
+     */
+    addon: Type.Optional(Type.Object({
+        /** « Chien de garde » : le Supervisor relance l'add-on s'il s'arrête. */
+        watchdog: Type.Union([Type.Boolean(), Type.Null()]),
+        /** « Mise à jour automatique » de l'add-on (pas celle de HA ni de l'OS). */
+        autoUpdate: Type.Union([Type.Boolean(), Type.Null()]),
+        /** « Lancer au démarrage » : `auto` = l'add-on repart avec la machine. */
+        boot: Type.Union([Type.Literal('auto'), Type.Literal('manual'), Type.Null()]),
+    }, { additionalProperties: false })),
 }, { additionalProperties: false });
 export const HeartbeatResponse = Type.Object({
     accepted: Type.Literal(true),
