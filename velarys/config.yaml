@@ -1,8 +1,9 @@
 name: Velarys
 version: "0.1.0"
 slug: velarys
-description: Supervision Velarys de votre installation (battement de cœur signé vers le central Velarys)
-url: https://github.com/Velarys-org/velarys-ha-addons/tree/main/velarys
+description: Velarys repère les pannes de votre installation, sans rien savoir de la vie du logement
+# Lien « Visitez la page Velarys » de l'onglet Info : le site, pas le code (le README y renvoie).
+url: https://velarys.fr
 arch:
   - aarch64
   - amd64
