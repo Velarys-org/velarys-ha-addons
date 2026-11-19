@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2
+
+- Nom raccourci en « Suivi et Maintenance » : le magasin d'applications le range déjà sous le dépôt Velarys.
+
 ## 0.1.1
 
 - Nouveau nom, « Suivi et Maintenance Velarys », et description sans jargon.

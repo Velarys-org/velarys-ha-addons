@@ -1,4 +1,4 @@
-# Suivi et Maintenance Velarys
+# Suivi et Maintenance
 
 Cet add-on relie votre installation Home Assistant au service de suivi Velarys. Il signale
 régulièrement au central Velarys que l'installation fonctionne, pour que Velarys repère une panne
@@ -27,7 +27,8 @@ central refuse tout champ qui n'y figure pas.
 
 1. Dans Home Assistant, **Paramètres > Applications > Installer une application**, menu ⋮ en haut
    à droite, **Dépôts**, puis **Ajouter** `https://github.com/Velarys-org/velarys-ha-addons`.
-2. Dans le magasin d'applications, ouvrir **Suivi et Maintenance Velarys** et cliquer sur **Installer**.
+2. Dans le magasin d'applications, ouvrir **Suivi et Maintenance**, dans la section **Velarys**, et
+   cliquer sur **Installer**.
 3. Dans l'onglet **Configuration**, saisir le **code d'enrôlement** fourni par Velarys, puis
    enregistrer.
 4. Dans l'onglet **Info**, activer **Chien de garde** (relance l'add-on s'il s'arrête) et
