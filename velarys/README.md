@@ -29,13 +29,9 @@ réglage oublié à l'installation se voit donc à distance, sans attendre la pa
 
 ## Ce qui part
 
-Uniquement l'état technique de l'installation :
-
-- les versions de Home Assistant, du Supervisor, du système et de l'add-on ;
-- si Home Assistant répond, et si le Supervisor se déclare en bonne santé ;
-- depuis combien de temps la box est allumée ;
-- si le chien de garde, la mise à jour automatique et le lancement au démarrage de l'add-on sont
-  activés.
+Uniquement l'état technique de l'installation : les versions des logiciels, si Home Assistant
+répond, depuis combien de temps la box est allumée et les réglages de l'add-on. La liste exacte
+est dans l'onglet **Documentation**.
 
 ## Ce qui ne part jamais
 
@@ -89,9 +85,8 @@ hub, an update that went wrong, a long power cut. An internet outage looks the s
 outside, and Velarys will check with you. The sign of life also shows whether the add-on is set to
 restart and update on its own, so a forgotten setting is caught before it matters.
 
-**What is sent.** Technical state only: software versions, whether Home Assistant and the
-Supervisor are healthy, uptime, and the add-on's own watchdog, auto-update and start-on-boot
-settings. Nothing about life in your home ever leaves it: no presence, cameras, locks, calendars,
+**What is sent.** Technical state only: software versions, whether Home Assistant responds, uptime
+and the add-on's own settings. Nothing about life in your home ever leaves it: no presence, cameras, locks, calendars,
 sensor history or logs. The Velarys server rejects any message holding anything else.
 
 **Security.** No port is opened: the add-on only makes outbound HTTPS requests. Every message is
