@@ -2,6 +2,8 @@ import { readFile } from 'node:fs/promises';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { HUB_API_VERSION } from '@velarys/hub-api';
 import { run } from './agent.js';
+import { openHaWs } from './ha-ws.js';
+import { collectHealth, HealthCache } from './health.js';
 import { loadIdentity, saveIdentity } from './identity.js';
 import { log, setLogLevel } from './log.js';
 import { readOptions } from './options.js';
@@ -22,6 +24,9 @@ if (!token) {
   process.exit(1);
 }
 const supervisor = new SupervisorClient(token);
+const health = new HealthCache(() =>
+  collectHealth({ supervisor: (path) => supervisor.data(path), openWs: () => openHaWs(token) }),
+);
 
 log.info('Agent Velarys démarré', { version: pkg.version, contract: HUB_API_VERSION, central: options.central_url });
 
@@ -30,6 +35,7 @@ await run({
   options,
   rawOptions,
   facts: () => supervisor.facts(),
+  health: () => health.get(),
   clearEnrollmentCode: (raw) => supervisor.clearEnrollmentCode(raw),
   loadIdentity: () => loadIdentity(),
   saveIdentity: (identity) => saveIdentity(identity),

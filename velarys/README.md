@@ -27,16 +27,22 @@ fait la différence avec vous.
 Le signe de vie dit aussi si l'add-on est bien réglé pour redémarrer seul et se tenir à jour. Un
 réglage oublié à l'installation se voit donc à distance, sans attendre la panne.
 
+Il porte enfin un bilan de santé : une sauvegarde qui ne se fait plus, un disque presque plein, une
+mise à jour qui traîne ou une intégration qui ne démarre plus se voient chez Velarys avant de
+provoquer une panne.
+
 ## Ce qui part
 
 Uniquement l'état technique de l'installation : les versions des logiciels, si Home Assistant
-répond, depuis combien de temps la box est allumée et les réglages de l'add-on. La liste exacte
-est dans l'onglet **Documentation**.
+répond, depuis combien de temps la box est allumée, les réglages de l'add-on, et le bilan de santé
+(mises à jour en attente, date de la dernière sauvegarde, espace disque, intégrations en échec et
+réparations, par leur code). La liste exacte est dans l'onglet **Documentation**.
 
 ## Ce qui ne part jamais
 
 Rien sur la vie du logement : ni présence, ni caméras, ni serrures, ni calendriers, ni historique
-des capteurs, ni journaux. La liste de ce qu'un signe de vie peut contenir est fixée à l'avance, et
+des capteurs, ni journaux, ni le nom de vos appareils. Velarys ne garde ni ne lit vos sauvegardes :
+seule leur date lui parvient. La liste de ce qu'un signe de vie peut contenir est fixée à l'avance, et
 le serveur Velarys refuse tout message qui en sortirait.
 
 ## Sécurité
@@ -83,11 +89,15 @@ add-on, Velarys set up or maintains your system: the add-on lets it keep an eye 
 reports that Home Assistant no longer responds, Velarys is alerted and gets back to you: a frozen
 hub, an update that went wrong, a long power cut. An internet outage looks the same from the
 outside, and Velarys will check with you. The sign of life also shows whether the add-on is set to
-restart and update on its own, so a forgotten setting is caught before it matters.
+restart and update on its own, so a forgotten setting is caught before it matters. It also carries
+a health check: a backup that no longer runs, a disk filling up, an update left waiting or an
+integration that no longer starts is seen by Velarys before it causes a fault.
 
-**What is sent.** Technical state only: software versions, whether Home Assistant responds, uptime
-and the add-on's own settings. Nothing about life in your home ever leaves it: no presence, cameras, locks, calendars,
-sensor history or logs. The Velarys server rejects any message holding anything else.
+**What is sent.** Technical state only: software versions, whether Home Assistant responds, uptime,
+the add-on's own settings, and the health check (pending updates, date of the last backup, disk
+space, failing integrations and repairs, as codes). Nothing about life in your home ever leaves it:
+no presence, cameras, locks, calendars, sensor history, logs or device names. Velarys neither keeps
+nor reads your backups: only their date reaches it. The Velarys server rejects any message holding anything else.
 
 **Security.** No port is opened: the add-on only makes outbound HTTPS requests. Every message is
 signed by a key created on your hub, which never leaves it and is left out of backups. The

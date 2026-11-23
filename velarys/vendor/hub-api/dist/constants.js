@@ -1,5 +1,5 @@
 /** Version du contrat, recopiée dans l'add-on avec le package vendorisé. */
-export const HUB_API_VERSION = '0.2.0';
+export const HUB_API_VERSION = '0.3.0';
 /** Routes publiques, les seules que le tunnel Cloudflare publie (préfixe `/v1/hub/`). */
 export const HUB_PATHS = {
     enroll: '/v1/hub/enroll',

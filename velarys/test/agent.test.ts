@@ -151,6 +151,27 @@ describe('agent', () => {
     for (const ms of h.state.sleeps) expect(ms).toBeGreaterThanOrEqual(108_000), expect(ms).toBeLessThanOrEqual(132_000);
   });
 
+  it('joint le résumé de santé au battement, et bat sans quand il n’y en a pas', async () => {
+    const health = {
+      collectedAt: '2026-11-23T12:00:00.000Z',
+      updates: { items: [], otherCount: 0 },
+      backup: null,
+      disk: { totalGb: 32, freeGb: 20 },
+      integrations: [],
+      repairs: null,
+      system: { unhealthy: [], unsupported: [] },
+      probeErrors: ['backup', 'repairs'],
+    };
+    let calls = 0;
+    const h = harness(central, { maxSleeps: 2, health: async () => (calls++ === 0 ? health : null) });
+    await h.run();
+    const beats = central.received.filter((r) => r.path === HUB_PATHS.heartbeat).map((r) => r.body as HeartbeatV1);
+    expect(beats).toHaveLength(2);
+    expect(beats[0]!.health).toEqual(health);
+    expect(Value.Check(HeartbeatV1, beats[0])).toBe(true);
+    expect(beats[1]!).not.toHaveProperty('health');
+  });
+
   it('attend sans rien envoyer quand il n’a ni identité ni code', async () => {
     const h = harness(central, { maxSleeps: 1 });
     h.deps.options = { ...h.deps.options };

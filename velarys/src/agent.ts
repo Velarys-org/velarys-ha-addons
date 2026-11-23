@@ -8,6 +8,7 @@ import {
   privateKeyFromPem,
   type EnrollRequest,
   type EnrollResponse,
+  type HealthV1,
   type HeartbeatResponse,
   type HeartbeatV1,
 } from '@velarys/hub-api';
@@ -23,6 +24,8 @@ export interface AgentDeps {
   options: AddonOptions;
   rawOptions: Record<string, unknown>;
   facts(): Promise<HostFacts>;
+  /** Résumé de santé (mis en cache, cf. `HealthCache`) ; absent ou `null` = pas de bloc `health`. */
+  health?(): Promise<HealthV1 | null>;
   clearEnrollmentCode(rawOptions: Record<string, unknown>): Promise<boolean>;
   loadIdentity(): Promise<HubIdentity | null>;
   saveIdentity(identity: HubIdentity): Promise<void>;
@@ -39,7 +42,12 @@ const HINTS: Record<string, string> = {
   code_expired: 'code expiré : en générer un nouveau depuis le central',
 };
 
-export function buildHeartbeat(facts: HostFacts, agentVersion: string, now = new Date()): HeartbeatV1 {
+export function buildHeartbeat(
+  facts: HostFacts,
+  agentVersion: string,
+  now = new Date(),
+  health: HealthV1 | null = null,
+): HeartbeatV1 {
   return {
     schema: HEARTBEAT_SCHEMA_V1,
     sentAt: now.toISOString(),
@@ -49,6 +57,7 @@ export function buildHeartbeat(facts: HostFacts, agentVersion: string, now = new
     os: { version: facts.osVersion },
     host: { uptimeSec: facts.uptimeSec },
     addon: { watchdog: facts.addonWatchdog, autoUpdate: facts.addonAutoUpdate, boot: facts.addonBoot },
+    ...(health ? { health } : {}),
   };
 }
 
@@ -122,7 +131,8 @@ export type BeatOutcome =
 
 export async function beat(deps: AgentDeps, identity: HubIdentity): Promise<BeatOutcome> {
   const post = deps.post ?? signedPost;
-  const payload = buildHeartbeat(await deps.facts(), deps.agentVersion);
+  const [facts, health] = await Promise.all([deps.facts(), deps.health ? deps.health() : Promise.resolve(null)]);
+  const payload = buildHeartbeat(facts, deps.agentVersion, new Date(), health);
   const result: CentralResult<HeartbeatResponse> = await post<HeartbeatResponse>(
     deps.options.central_url,
     HUB_PATHS.heartbeat,

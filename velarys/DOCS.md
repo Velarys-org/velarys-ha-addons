@@ -2,7 +2,8 @@
 
 Cet add-on relie votre installation Home Assistant au service de suivi Velarys. Il signale
 régulièrement au central Velarys que l'installation fonctionne, pour que Velarys repère une panne
-avant vous.
+avant vous, et ce qui la prépare : une sauvegarde qui ne se fait plus, un disque presque plein, une
+mise à jour qui traîne ou une intégration qui ne démarre plus.
 
 ## Ce que l'add-on envoie
 
@@ -15,13 +16,28 @@ Toutes les cinq minutes environ, un « battement de cœur » qui contient unique
 - la version de l'add-on, et s'il est réglé pour redémarrer seul (chien de garde), se mettre à jour
   et démarrer avec la machine.
 
+Toutes les quinze minutes environ, il y joint un bilan de santé de l'installation :
+
+- les mises à jour en attente pour Home Assistant, Home Assistant OS, le Supervisor et les
+  add-ons (le nom technique de l'add-on et ses versions), et le nombre des autres mises à jour
+  disponibles (HACS, modules Zigbee…), sans leur nom ;
+- la date de la dernière sauvegarde réussie, si la dernière tentative a échoué, et si au moins une
+  copie part hors de la machine (oui ou non, sans dire où) ;
+- l'espace disque total et libre ;
+- le nom technique des intégrations qui n'arrivent pas à démarrer (par exemple `netatmo`), sans le
+  nom que vous leur avez donné ;
+- les réparations signalées par Home Assistant, par leur code (hors Spook et avis génériques) ;
+- les problèmes que le Supervisor signale sur le système.
+
 C'est le silence qui alerte : si les battements cessent, Velarys sait que l'installation ne
 répond plus.
 
 ## Ce que l'add-on n'envoie jamais
 
 Rien sur la vie du logement : ni présence, ni caméras, ni serrures, ni calendriers, ni historique
-des capteurs, ni journaux. Le contenu exact d'un battement est fixé par un contrat versionné, et le
+des capteurs, ni journaux. Ni le nom de vos appareils, de vos pièces ou de vos intégrations, ni
+l'emplacement de vos sauvegardes. Velarys ne garde ni ne lit vos sauvegardes : seule leur date lui
+parvient. Le contenu exact d'un battement est fixé par un contrat versionné, et le
 central refuse tout champ qui n'y figure pas.
 
 ## Installation

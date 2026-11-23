@@ -19,6 +19,14 @@ ici : ce dépôt ne porte ni chemin local, ni infrastructure, ni donnée client.
   historique ni journal. Un nouveau champ s'ajoute d'abord au contrat côté central, en facultatif
   dans le schéma en cours (retrait ou renommage = nouveau schéma), et **le central est déployé avant
   de publier l'add-on** : l'ancien central refuserait le champ et le hub paraîtrait muet.
+- **Le bilan de santé** (`velarys/src/health.ts`, bloc `health` du contrat 0.3.0) rapporte, il ne
+  juge pas : les seuils sont au central. Il ne sort que des codes, des versions, des dates et des
+  comptes, réduits localement : jamais de titre d'intégration, d'`entity_id`, de nom d'appareil ni
+  d'emplacement de sauvegarde (`test/health.test.ts` le vérifie). Les réparations écartées (Spook,
+  avis génériques) forment une liste fermée, versionnée ici. Il lit le Supervisor au rôle `default`
+  (routes `…/info`) et le WebSocket de HA par le proxy du Supervisor ; vérifié sur la VM HAOS 18.4
+  le 2026-11-23, sans refus du Supervisor ni d'AppArmor. Une lecture en échec vaut `null` et un code
+  dans `probeErrors`, jamais un battement bloqué.
 - **La clé privée ne sort pas du hub** : `/data/identity/` est exclu des sauvegardes
   (`backup_exclude` dans `config.yaml`, deux motifs car le Supervisor compare au chemin complet).
 - **Aucun port ouvert**, uniquement du HTTPS sortant vers le central.

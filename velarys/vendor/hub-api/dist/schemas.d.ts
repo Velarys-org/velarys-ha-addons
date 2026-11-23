@@ -29,6 +29,71 @@ export declare const EnrollResponse: Type.TObject<{
     heartbeatIntervalSec: Type.TInteger;
 }>;
 export type EnrollResponse = Type.Static<typeof EnrollResponse>;
+/** Mise à jour disponible d'un composant suivi par le Supervisor. */
+export declare const HealthUpdate: Type.TObject<{
+    component: Type.TUnion<[Type.TLiteral<"core">, Type.TLiteral<"os">, Type.TLiteral<"supervisor">, Type.TLiteral<"addon">]>;
+    /** Slug de l'add-on, pour `addon` seulement. */
+    slug: Type.TOptional<Type.TString>;
+    version: Type.TString;
+    latest: Type.TString;
+}>;
+export type HealthUpdate = Type.Static<typeof HealthUpdate>;
+/** États d'une intégration en échec ; une intégration chargée ne remonte pas. */
+export declare const IntegrationFailure: Type.TUnion<[Type.TLiteral<"setup_error">, Type.TLiteral<"setup_retry">, Type.TLiteral<"migration_error">, Type.TLiteral<"failed_unload">]>;
+/**
+ * Résumé de santé du hub (contrat 0.3.0). Des codes, des versions, des dates et des comptes : jamais
+ * de titre d'intégration, d'`entity_id`, de nom d'appareil, d'emplacement de sauvegarde ni de
+ * journal. L'add-on rapporte, le central juge : aucun seuil ici.
+ *
+ * Chaque sous-bloc vaut `null` quand sa lecture a échoué, et `probeErrors` dit lesquelles : le
+ * central distingue « inconnu » de « tout va bien ».
+ */
+export declare const HealthV1: Type.TObject<{
+    collectedAt: Type.TString;
+    updates: Type.TUnion<[Type.TObject<{
+        items: Type.TArray<Type.TObject<{
+            component: Type.TUnion<[Type.TLiteral<"core">, Type.TLiteral<"os">, Type.TLiteral<"supervisor">, Type.TLiteral<"addon">]>;
+            /** Slug de l'add-on, pour `addon` seulement. */
+            slug: Type.TOptional<Type.TString>;
+            version: Type.TString;
+            latest: Type.TString;
+        }>>;
+        /** Autres mises à jour disponibles (HACS, firmwares Zigbee…) : un compte seulement. */
+        otherCount: Type.TInteger;
+    }>, Type.TNull]>;
+    backup: Type.TUnion<[Type.TObject<{
+        /** Dernière sauvegarde automatique réussie. */
+        lastSuccessAt: Type.TUnion<[Type.TString, Type.TNull]>;
+        /** Dernière tentative de sauvegarde automatique, réussie ou non. */
+        lastAttemptAt: Type.TUnion<[Type.TString, Type.TNull]>;
+        /** La dernière tentative a échoué. */
+        lastAttemptFailed: Type.TUnion<[Type.TBoolean, Type.TNull]>;
+        /** Au moins une destination hors du hub (cloud, NAS…), sans dire laquelle. */
+        offHubCopy: Type.TUnion<[Type.TBoolean, Type.TNull]>;
+    }>, Type.TNull]>;
+    disk: Type.TUnion<[Type.TObject<{
+        totalGb: Type.TNumber;
+        freeGb: Type.TNumber;
+    }>, Type.TNull]>;
+    integrations: Type.TUnion<[Type.TArray<Type.TObject<{
+        domain: Type.TString;
+        state: Type.TUnion<[Type.TLiteral<"setup_error">, Type.TLiteral<"setup_retry">, Type.TLiteral<"migration_error">, Type.TLiteral<"failed_unload">]>;
+    }>>, Type.TNull]>;
+    /** Réparations signalées par HA, hors Spook et hors liste « génériques » de l'add-on. */
+    repairs: Type.TUnion<[Type.TArray<Type.TObject<{
+        domain: Type.TString;
+        /** `translation_key` de la réparation, jamais son `issue_id` (qui peut citer une entité). */
+        key: Type.TString;
+        severity: Type.TUnion<[Type.TLiteral<"critical">, Type.TLiteral<"error">, Type.TLiteral<"warning">]>;
+    }>>, Type.TNull]>;
+    /** Centre de résolution du Supervisor : raisons d'« unhealthy » et d'« unsupported ». */
+    system: Type.TUnion<[Type.TObject<{
+        unhealthy: Type.TArray<Type.TString>;
+        unsupported: Type.TArray<Type.TString>;
+    }>, Type.TNull]>;
+    probeErrors: Type.TArray<Type.TString>;
+}>;
+export type HealthV1 = Type.Static<typeof HealthV1>;
 /**
  * Battement de cœur, version 1. Uniquement de l'état technique : jamais de présence, de caméra,
  * de serrure ni de calendrier (cadrage du 16/11/2026).
@@ -65,6 +130,55 @@ export declare const HeartbeatV1: Type.TObject<{
         autoUpdate: Type.TUnion<[Type.TBoolean, Type.TNull]>;
         /** « Lancer au démarrage » : `auto` = l'add-on repart avec la machine. */
         boot: Type.TUnion<[Type.TLiteral<"auto">, Type.TLiteral<"manual">, Type.TNull]>;
+    }>>;
+    /**
+     * Résumé de santé (contrat 0.3.0). Facultatif : absent = agent antérieur, ou relevé pas encore
+     * fait depuis le démarrage.
+     */
+    health: Type.TOptional<Type.TObject<{
+        collectedAt: Type.TString;
+        updates: Type.TUnion<[Type.TObject<{
+            items: Type.TArray<Type.TObject<{
+                component: Type.TUnion<[Type.TLiteral<"core">, Type.TLiteral<"os">, Type.TLiteral<"supervisor">, Type.TLiteral<"addon">]>;
+                /** Slug de l'add-on, pour `addon` seulement. */
+                slug: Type.TOptional<Type.TString>;
+                version: Type.TString;
+                latest: Type.TString;
+            }>>;
+            /** Autres mises à jour disponibles (HACS, firmwares Zigbee…) : un compte seulement. */
+            otherCount: Type.TInteger;
+        }>, Type.TNull]>;
+        backup: Type.TUnion<[Type.TObject<{
+            /** Dernière sauvegarde automatique réussie. */
+            lastSuccessAt: Type.TUnion<[Type.TString, Type.TNull]>;
+            /** Dernière tentative de sauvegarde automatique, réussie ou non. */
+            lastAttemptAt: Type.TUnion<[Type.TString, Type.TNull]>;
+            /** La dernière tentative a échoué. */
+            lastAttemptFailed: Type.TUnion<[Type.TBoolean, Type.TNull]>;
+            /** Au moins une destination hors du hub (cloud, NAS…), sans dire laquelle. */
+            offHubCopy: Type.TUnion<[Type.TBoolean, Type.TNull]>;
+        }>, Type.TNull]>;
+        disk: Type.TUnion<[Type.TObject<{
+            totalGb: Type.TNumber;
+            freeGb: Type.TNumber;
+        }>, Type.TNull]>;
+        integrations: Type.TUnion<[Type.TArray<Type.TObject<{
+            domain: Type.TString;
+            state: Type.TUnion<[Type.TLiteral<"setup_error">, Type.TLiteral<"setup_retry">, Type.TLiteral<"migration_error">, Type.TLiteral<"failed_unload">]>;
+        }>>, Type.TNull]>;
+        /** Réparations signalées par HA, hors Spook et hors liste « génériques » de l'add-on. */
+        repairs: Type.TUnion<[Type.TArray<Type.TObject<{
+            domain: Type.TString;
+            /** `translation_key` de la réparation, jamais son `issue_id` (qui peut citer une entité). */
+            key: Type.TString;
+            severity: Type.TUnion<[Type.TLiteral<"critical">, Type.TLiteral<"error">, Type.TLiteral<"warning">]>;
+        }>>, Type.TNull]>;
+        /** Centre de résolution du Supervisor : raisons d'« unhealthy » et d'« unsupported ». */
+        system: Type.TUnion<[Type.TObject<{
+            unhealthy: Type.TArray<Type.TString>;
+            unsupported: Type.TArray<Type.TString>;
+        }>, Type.TNull]>;
+        probeErrors: Type.TArray<Type.TString>;
     }>>;
 }>;
 export type HeartbeatV1 = Type.Static<typeof HeartbeatV1>;

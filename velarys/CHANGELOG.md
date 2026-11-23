@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.0
+
+- Bilan de santé joint au battement, relu toutes les quinze minutes : mises à jour en attente
+  (Home Assistant, OS, Supervisor, add-ons, et le nombre des autres), date de la dernière
+  sauvegarde réussie, échec de la dernière tentative et copie hors de la machine (oui ou non),
+  espace disque, intégrations en échec, réparations signalées par Home Assistant (hors Spook et
+  avis génériques) et problèmes du Supervisor. Des codes, des versions et des dates : aucun nom
+  d'appareil, de pièce ou d'emplacement ne sort.
+- Une lecture qui échoue est signalée comme telle et ne bloque jamais le battement.
+
 ## 0.1.5
 
 - Le battement indique si le chien de garde, la mise à jour automatique et le lancement au

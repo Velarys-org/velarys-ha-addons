@@ -1,5 +1,5 @@
 name: Suivi et Maintenance
-version: "0.1.5"
+version: "0.2.0"
 slug: velarys
 description: Velarys repère les pannes de votre installation, sans rien savoir de la vie du logement
 # Lien « Visitez la page … » de l'onglet Info : la page de suivi du site (noindex), pas le code.

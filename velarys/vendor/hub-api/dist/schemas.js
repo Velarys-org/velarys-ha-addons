@@ -26,6 +26,85 @@ export const EnrollResponse = Type.Object({
     heartbeatIntervalSec: Type.Integer(),
 });
 /**
+ * Identifiant technique (domaine d'intégration, slug d'add-on, clé de réparation, raison du
+ * Supervisor) : minuscules, chiffres, `_ . -`. Jamais de texte libre, où traîneraient des noms de
+ * personnes, d'appareils ou d'emplacements.
+ */
+const Code = Type.String({ minLength: 1, maxLength: 64, pattern: '^[a-z0-9_.-]+$' });
+const NullableDate = Type.Union([Type.String({ format: 'date-time' }), Type.Null()]);
+const strict = { additionalProperties: false };
+/** Mise à jour disponible d'un composant suivi par le Supervisor. */
+export const HealthUpdate = Type.Object({
+    component: Type.Union([Type.Literal('core'), Type.Literal('os'), Type.Literal('supervisor'), Type.Literal('addon')]),
+    /** Slug de l'add-on, pour `addon` seulement. */
+    slug: Type.Optional(Code),
+    version: Version,
+    latest: Version,
+}, strict);
+/** États d'une intégration en échec ; une intégration chargée ne remonte pas. */
+export const IntegrationFailure = Type.Union([
+    Type.Literal('setup_error'),
+    Type.Literal('setup_retry'),
+    Type.Literal('migration_error'),
+    Type.Literal('failed_unload'),
+]);
+/**
+ * Résumé de santé du hub (contrat 0.3.0). Des codes, des versions, des dates et des comptes : jamais
+ * de titre d'intégration, d'`entity_id`, de nom d'appareil, d'emplacement de sauvegarde ni de
+ * journal. L'add-on rapporte, le central juge : aucun seuil ici.
+ *
+ * Chaque sous-bloc vaut `null` quand sa lecture a échoué, et `probeErrors` dit lesquelles : le
+ * central distingue « inconnu » de « tout va bien ».
+ */
+export const HealthV1 = Type.Object({
+    collectedAt: Type.String({ format: 'date-time' }),
+    updates: Type.Union([
+        Type.Object({
+            items: Type.Array(HealthUpdate, { maxItems: 64 }),
+            /** Autres mises à jour disponibles (HACS, firmwares Zigbee…) : un compte seulement. */
+            otherCount: Type.Integer({ minimum: 0 }),
+        }, strict),
+        Type.Null(),
+    ]),
+    backup: Type.Union([
+        Type.Object({
+            /** Dernière sauvegarde automatique réussie. */
+            lastSuccessAt: NullableDate,
+            /** Dernière tentative de sauvegarde automatique, réussie ou non. */
+            lastAttemptAt: NullableDate,
+            /** La dernière tentative a échoué. */
+            lastAttemptFailed: Type.Union([Type.Boolean(), Type.Null()]),
+            /** Au moins une destination hors du hub (cloud, NAS…), sans dire laquelle. */
+            offHubCopy: Type.Union([Type.Boolean(), Type.Null()]),
+        }, strict),
+        Type.Null(),
+    ]),
+    disk: Type.Union([
+        Type.Object({ totalGb: Type.Number({ minimum: 0 }), freeGb: Type.Number({ minimum: 0 }) }, strict),
+        Type.Null(),
+    ]),
+    integrations: Type.Union([
+        Type.Array(Type.Object({ domain: Code, state: IntegrationFailure }, strict), { maxItems: 64 }),
+        Type.Null(),
+    ]),
+    /** Réparations signalées par HA, hors Spook et hors liste « génériques » de l'add-on. */
+    repairs: Type.Union([
+        Type.Array(Type.Object({
+            domain: Code,
+            /** `translation_key` de la réparation, jamais son `issue_id` (qui peut citer une entité). */
+            key: Code,
+            severity: Type.Union([Type.Literal('critical'), Type.Literal('error'), Type.Literal('warning')]),
+        }, strict), { maxItems: 64 }),
+        Type.Null(),
+    ]),
+    /** Centre de résolution du Supervisor : raisons d'« unhealthy » et d'« unsupported ». */
+    system: Type.Union([
+        Type.Object({ unhealthy: Type.Array(Code, { maxItems: 32 }), unsupported: Type.Array(Code, { maxItems: 32 }) }, strict),
+        Type.Null(),
+    ]),
+    probeErrors: Type.Array(Code, { maxItems: 16 }),
+}, strict);
+/**
  * Battement de cœur, version 1. Uniquement de l'état technique : jamais de présence, de caméra,
  * de serrure ni de calendrier (cadrage du 16/11/2026).
  */
@@ -56,6 +135,11 @@ export const HeartbeatV1 = Type.Object({
         /** « Lancer au démarrage » : `auto` = l'add-on repart avec la machine. */
         boot: Type.Union([Type.Literal('auto'), Type.Literal('manual'), Type.Null()]),
     }, { additionalProperties: false })),
+    /**
+     * Résumé de santé (contrat 0.3.0). Facultatif : absent = agent antérieur, ou relevé pas encore
+     * fait depuis le démarrage.
+     */
+    health: Type.Optional(HealthV1),
 }, { additionalProperties: false });
 export const HeartbeatResponse = Type.Object({
     accepted: Type.Literal(true),
