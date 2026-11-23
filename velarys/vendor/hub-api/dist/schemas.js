@@ -1,5 +1,6 @@
 import Type from 'typebox';
-import { HEARTBEAT_INTERVAL_MAX_SEC, HEARTBEAT_INTERVAL_MIN_SEC, HEARTBEAT_SCHEMA_V1, } from './constants.js';
+import { HEARTBEAT_INTERVAL_MAX_SEC, HEARTBEAT_INTERVAL_MIN_SEC, HEARTBEAT_SCHEMA_V1, TICKET_SCHEMA_V1, } from './constants.js';
+import { SEAL_ALG } from './seal.js';
 /** Clé publique Ed25519 du hub, au format JWK (RFC 8037). */
 export const Ed25519PublicJwk = Type.Object({
     kty: Type.Literal('OKP'),
@@ -152,6 +153,38 @@ export const HealthResponse = Type.Object({
     status: Type.Literal('ok'),
     heartbeatSchemas: Type.Array(Type.String()),
 });
+/**
+ * Demandes du hub (contrat 0.4.0) : assistance ou évolution. Le texte libre du client ne circule que
+ * scellé pour le central (`seal.ts`) ; rien de libre ne redescend vers le hub, qui ne reçoit que des
+ * statuts choisis dans une liste fermée.
+ */
+export const TicketKind = Type.Union([Type.Literal('assistance'), Type.Literal('evolution')]);
+export const TicketStatus = Type.Union([Type.Literal('new'), Type.Literal('in_progress'), Type.Literal('closed')]);
+/** Issue d'une demande close : réalisée ou écartée (évolution surtout, une assistance close vaut `done`). */
+export const TicketOutcome = Type.Union([Type.Literal('done'), Type.Literal('declined'), Type.Null()]);
+const B64u = (min, max) => Type.String({ minLength: min, maxLength: max, pattern: '^[A-Za-z0-9_-]+$' });
+export const SealedText = Type.Object({
+    kid: B64u(16, 16),
+    enc: B64u(43, 43),
+    /** 2 000 caractères de 4 octets au pire, plus l'étiquette GCM, en base64url. */
+    ct: B64u(22, 10_752),
+}, strict);
+export const TicketCreateRequest = Type.Object({ schema: Type.Literal(TICKET_SCHEMA_V1), kind: TicketKind, sealed: SealedText }, strict);
+/** Ce que le hub sait d'une demande : jamais le texte (il le garde de son côté), jamais de note. */
+export const TicketSummary = Type.Object({
+    id: Type.String({ format: 'uuid' }),
+    kind: TicketKind,
+    status: TicketStatus,
+    outcome: TicketOutcome,
+    createdAt: Type.String({ format: 'date-time' }),
+    updatedAt: Type.String({ format: 'date-time' }),
+}, strict);
+export const TicketCreateResponse = Type.Object({ ticket: TicketSummary }, strict);
+/** Corps de la liste : vide, la requête est signée par le hub qui demande les siennes. */
+export const TicketListRequest = Type.Object({}, strict);
+export const TicketListResponse = Type.Object({ tickets: Type.Array(TicketSummary, { maxItems: 50 }) }, strict);
+/** Clé publique de scellement du central. Lue seulement hors production : en production, elle est épinglée. */
+export const SealKeyResponse = Type.Object({ alg: Type.Literal(SEAL_ALG), kid: B64u(16, 16), publicKey: B64u(43, 43) }, strict);
 /** Erreurs typées : l'add-on agit selon `error`, jamais selon le message. */
 export const HubErrorCode = Type.Union([
     Type.Literal('invalid_request'),
@@ -164,6 +197,12 @@ export const HubErrorCode = Type.Union([
     Type.Literal('code_expired'),
     Type.Literal('key_already_enrolled'),
     Type.Literal('unsupported_schema'),
+    // Demandes (contrat 0.4.0)
+    Type.Literal('tickets_disabled'),
+    Type.Literal('unknown_seal_key'),
+    Type.Literal('undecryptable'),
+    Type.Literal('message_too_long'),
+    Type.Literal('rate_limited'),
 ]);
 export const HubError = Type.Object({
     error: HubErrorCode,

@@ -1,0 +1,353 @@
+/* Panneau Velarys : charte « Clarté premium » réduite, sans police ni ressource externe
+   (rien ne doit sortir du logement pour afficher le panneau). */
+:root {
+  --mint: #2bf0a5;
+  --mint-ink: #0b7a52;
+  --ink: #211f1c;
+  --ink-2: #57534e;
+  --ink-3: #8a857f;
+  --line: #e8e5e1;
+  --bg: #ffffff;
+  --bg-soft: #f7f6f4;
+  --page: #f7f6f4;
+  --amber: #92400e;
+  --amber-bg: #fef3c7;
+  --blue: #1d4ed8;
+  --blue-bg: #dbeafe;
+  --radius: 3px 14px 22px 14px;
+  --radius-sm: 3px 10px 14px 10px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #f2f0ed;
+    --ink-2: #c9c4bd;
+    --ink-3: #958f88;
+    --line: #34312d;
+    --bg: #1f1d1b;
+    --bg-soft: #2a2825;
+    --page: #161513;
+    --mint-ink: #2bf0a5;
+    --amber: #fbbf24;
+    --amber-bg: #3a2c0c;
+    --blue: #93b4ff;
+    --blue-bg: #1c2a4a;
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font: 15px/1.55 system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.mark {
+  width: 36px;
+  height: 36px;
+  color: var(--ink);
+  flex: none;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.35rem;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.sub {
+  margin: 0;
+  color: var(--ink-3);
+  font-size: 0.9rem;
+}
+
+.card {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.intro {
+  margin: 0 0 16px;
+  color: var(--ink-2);
+}
+
+.kinds {
+  border: 0;
+  margin: 0 0 16px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 520px) {
+  .kinds {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kind {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.kind:hover {
+  border-color: var(--ink-3);
+}
+
+.kind:has(input:checked) {
+  border-color: var(--ink);
+  box-shadow: inset 3px 0 0 var(--mint);
+}
+
+.kind input {
+  margin: 3px 0 0;
+  accent-color: var(--ink);
+}
+
+.kind input:focus-visible {
+  outline: 2px solid var(--mint);
+  outline-offset: 2px;
+}
+
+.kind-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.kind-title {
+  font-weight: 600;
+}
+
+.kind-hint {
+  color: var(--ink-3);
+  font-size: 0.88rem;
+}
+
+.field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+textarea {
+  width: 100%;
+  font: inherit;
+  color: var(--ink);
+  background: var(--bg);
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  resize: vertical;
+  min-height: 8rem;
+}
+
+textarea:focus {
+  outline: 2px solid var(--mint);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+.field-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: var(--ink-3);
+}
+
+.counter {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.counter.over {
+  color: var(--amber);
+  font-weight: 600;
+}
+
+.urgent {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 16px 0;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--amber-bg);
+  color: var(--amber);
+  font-size: 0.9rem;
+}
+
+.urgent svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  margin-top: 2px;
+}
+
+.urgent p {
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn {
+  font: inherit;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--bg);
+  cursor: pointer;
+  transition: box-shadow 0.15s;
+}
+
+.btn:hover:not(:disabled),
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--mint);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.status {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+.status[data-tone='ok'] {
+  color: var(--mint-ink);
+  font-weight: 600;
+}
+
+.status[data-tone='warn'] {
+  color: var(--amber);
+}
+
+.fine {
+  margin: 14px 0 0;
+  font-size: 0.82rem;
+  color: var(--ink-3);
+}
+
+.tickets {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ticket {
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+.ticket:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.ticket-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ticket-meta {
+  font-size: 0.85rem;
+  color: var(--ink-3);
+}
+
+.ticket-text {
+  margin: 6px 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.muted {
+  color: var(--ink-3);
+  font-style: italic;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: var(--bg-soft);
+  color: var(--ink-2);
+}
+
+.badge-new {
+  background: var(--blue-bg);
+  color: var(--blue);
+}
+
+.badge-in_progress {
+  background: var(--amber-bg);
+  color: var(--amber);
+}
+
+.badge-closed {
+  background: var(--bg-soft);
+  color: var(--ink-3);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

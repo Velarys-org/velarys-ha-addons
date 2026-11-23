@@ -1,6 +1,9 @@
-name: Suivi et Maintenance
-version: "0.2.0"
+name: Suivi et Maintenance (bêta)
+version: "0.3.0-beta.1"
 slug: velarys
+# Canal bêta : cette branche `beta` du dépôt, que seuls les hubs de test ajoutent
+# (`https://github.com/Velarys-org/velarys-ha-addons#beta`). Les clients suivent `main`.
+stage: experimental
 description: Velarys repère les pannes de votre installation, sans rien savoir de la vie du logement
 # Lien « Visitez la page … » de l'onglet Info : la page de suivi du site (noindex), pas le code.
 url: https://www.velarys.fr/suivi
@@ -10,6 +13,12 @@ arch:
 image: ghcr.io/velarys-org/velarys-ha-addon
 startup: services
 boot: auto
+# Panneau « Velarys » de la barre latérale (demandes d'assistance et idées d'évolution). Servi par
+# l'ingress du Supervisor, jamais publié sur l'hôte ; réservé aux administrateurs de HA (défaut).
+ingress: true
+ingress_port: 8099
+panel_icon: mdi:lifebuoy
+panel_title: Velarys
 # Lecture de l'état (versions, santé) et du proxy de Core pour savoir si Home Assistant répond.
 hassio_api: true
 hassio_role: default

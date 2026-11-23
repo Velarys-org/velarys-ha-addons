@@ -33,6 +33,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hpke/common@npm:^1.13.0":
+  version: 1.13.0
+  resolution: "@hpke/common@npm:1.13.0"
+  checksum: 10c0/7f1b2c43505c8e9f1984a7eda2643dae371b5943cca06477fe3ebf312186804bc831b4ccc97028427b4b40489c5fb39a934f89b8910233f9bb102af3081da8b9
+  languageName: node
+  linkType: hard
+
+"@hpke/core@npm:1.10.1":
+  version: 1.10.1
+  resolution: "@hpke/core@npm:1.10.1"
+  dependencies:
+    "@hpke/common": "npm:^1.13.0"
+  checksum: 10c0/09270adfa40c27f0aa669f28cee84661a3e843d832f7b1efd1cf57b824b00b5e4116c7f9fcf6005207f224ab25905e8de256d37f54263d6bf2ff473e21ba984d
+  languageName: node
+  linkType: hard
+
 "@isaacs/fs-minipass@npm:^4.0.0":
   version: 4.0.1
   resolution: "@isaacs/fs-minipass@npm:4.0.1"
@@ -391,12 +407,13 @@ __metadata:
   linkType: hard
 
 "@velarys/hub-api@file:./vendor/hub-api::locator=velarys-ha-addon%40workspace%3A.":
-  version: 0.3.0
-  resolution: "@velarys/hub-api@file:./vendor/hub-api#./vendor/hub-api::hash=e4fa2a&locator=velarys-ha-addon%40workspace%3A."
+  version: 0.4.0
+  resolution: "@velarys/hub-api@file:./vendor/hub-api#./vendor/hub-api::hash=77d1c6&locator=velarys-ha-addon%40workspace%3A."
   dependencies:
+    "@hpke/core": "npm:1.10.1"
     http-message-signatures: "npm:1.0.6"
     typebox: "npm:^1.4.7"
-  checksum: 10c0/02ca195f9d720ba9485b982aa8aba6ec8bf3450c593376336f4da588568f148d13a686b39a981b1947f604b2b0101eaac51865fb0758b904c04473075bd5bc83
+  checksum: 10c0/d4dfdc4fe16091a7410008d4bf225fc3c0a97f07febcc38a4a144d0373c1f2915fbbf0ccb213e3efa346073a18b2050d9960e7c8e75b26d55a0455c94f21c8ff
   languageName: node
   linkType: hard
 

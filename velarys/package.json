@@ -1,6 +1,6 @@
 {
   "name": "velarys-ha-addon",
-  "version": "0.2.0",
+  "version": "0.3.0-beta.1",
   "private": true,
   "description": "Agent Velarys pour Home Assistant OS : enrôlement signé et battement de cœur vers le central.",
   "license": "MIT",
@@ -16,11 +16,11 @@
     "start": "node dist/main.js"
   },
   "dependencies": {
-    "@velarys/hub-api": "file:./vendor/hub-api"
+    "@velarys/hub-api": "file:./vendor/hub-api",
+    "typebox": "^1.4.7"
   },
   "devDependencies": {
     "@types/node": "^24",
-    "typebox": "^1.4.7",
     "typescript": "^7.0.2",
     "vite": "^8",
     "vitest": "^5.1.0"

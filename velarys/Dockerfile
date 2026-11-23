@@ -19,6 +19,8 @@ WORKDIR /app
 COPY --from=build /app/node_modules node_modules
 COPY --from=build /app/vendor vendor
 COPY --from=build /app/dist dist
+# Panneau des demandes (ingress) : HTML, CSS et JS servis tels quels par l'agent.
+COPY panel panel
 COPY package.json ./
 # Node lancé directement, sans le docker-entrypoint.sh de l'image de base : aucun shell à
 # l'exécution, ce que le profil AppArmor (apparmor.txt) interdit.

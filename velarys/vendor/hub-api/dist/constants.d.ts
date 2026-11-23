@@ -1,10 +1,14 @@
 /** Version du contrat, recopiée dans l'add-on avec le package vendorisé. */
-export declare const HUB_API_VERSION = "0.3.0";
+export declare const HUB_API_VERSION = "0.4.0";
 /** Routes publiques, les seules que le tunnel Cloudflare publie (préfixe `/v1/hub/`). */
 export declare const HUB_PATHS: {
     readonly enroll: '/v1/hub/enroll';
     readonly heartbeat: '/v1/hub/heartbeat';
     readonly health: '/v1/hub/health';
+    /** Demandes du hub (contrat 0.4.0) : création, liste des statuts, clé de scellement du central. */
+    readonly tickets: '/v1/hub/tickets';
+    readonly ticketList: '/v1/hub/tickets/list';
+    readonly sealKey: '/v1/hub/seal-key';
 };
 /** Schémas de battement que le central accepte. Le central fait autorité : il en ajoute, il en retire. */
 export declare const HEARTBEAT_SCHEMA_V1 = "velarys.heartbeat/1";
@@ -24,3 +28,9 @@ export declare const CLOCK_TOLERANCE_SEC = 60;
 export declare const HEARTBEAT_INTERVAL_MIN_SEC = 60;
 export declare const HEARTBEAT_INTERVAL_MAX_SEC = 3600;
 export declare const HEARTBEAT_INTERVAL_DEFAULT_SEC = 300;
+/** Demandes (contrat 0.4.0). */
+export declare const TICKET_SCHEMA_V1 = "velarys.ticket/1";
+/** Longueur maximale du message, en caractères, vérifiée par le hub puis par le central après déchiffrement. */
+export declare const TICKET_MESSAGE_MAX_CHARS = 2000;
+/** Plafond anti-abus de demandes par hub sur 24 h glissantes. */
+export declare const TICKETS_PER_HUB_PER_DAY = 5;

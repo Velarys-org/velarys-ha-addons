@@ -192,11 +192,83 @@ export declare const HealthResponse: Type.TObject<{
     heartbeatSchemas: Type.TArray<Type.TString>;
 }>;
 export type HealthResponse = Type.Static<typeof HealthResponse>;
+/**
+ * Demandes du hub (contrat 0.4.0) : assistance ou évolution. Le texte libre du client ne circule que
+ * scellé pour le central (`seal.ts`) ; rien de libre ne redescend vers le hub, qui ne reçoit que des
+ * statuts choisis dans une liste fermée.
+ */
+export declare const TicketKind: Type.TUnion<[Type.TLiteral<"assistance">, Type.TLiteral<"evolution">]>;
+export type TicketKind = Type.Static<typeof TicketKind>;
+export declare const TicketStatus: Type.TUnion<[Type.TLiteral<"new">, Type.TLiteral<"in_progress">, Type.TLiteral<"closed">]>;
+export type TicketStatus = Type.Static<typeof TicketStatus>;
+/** Issue d'une demande close : réalisée ou écartée (évolution surtout, une assistance close vaut `done`). */
+export declare const TicketOutcome: Type.TUnion<[Type.TLiteral<"done">, Type.TLiteral<"declined">, Type.TNull]>;
+export type TicketOutcome = Type.Static<typeof TicketOutcome>;
+export declare const SealedText: Type.TObject<{
+    kid: Type.TString;
+    enc: Type.TString;
+    /** 2 000 caractères de 4 octets au pire, plus l'étiquette GCM, en base64url. */
+    ct: Type.TString;
+}>;
+export type SealedText = Type.Static<typeof SealedText>;
+export declare const TicketCreateRequest: Type.TObject<{
+    schema: Type.TLiteral<"velarys.ticket/1">;
+    kind: Type.TUnion<[Type.TLiteral<"assistance">, Type.TLiteral<"evolution">]>;
+    sealed: Type.TObject<{
+        kid: Type.TString;
+        enc: Type.TString;
+        /** 2 000 caractères de 4 octets au pire, plus l'étiquette GCM, en base64url. */
+        ct: Type.TString;
+    }>;
+}>;
+export type TicketCreateRequest = Type.Static<typeof TicketCreateRequest>;
+/** Ce que le hub sait d'une demande : jamais le texte (il le garde de son côté), jamais de note. */
+export declare const TicketSummary: Type.TObject<{
+    id: Type.TString;
+    kind: Type.TUnion<[Type.TLiteral<"assistance">, Type.TLiteral<"evolution">]>;
+    status: Type.TUnion<[Type.TLiteral<"new">, Type.TLiteral<"in_progress">, Type.TLiteral<"closed">]>;
+    outcome: Type.TUnion<[Type.TLiteral<"done">, Type.TLiteral<"declined">, Type.TNull]>;
+    createdAt: Type.TString;
+    updatedAt: Type.TString;
+}>;
+export type TicketSummary = Type.Static<typeof TicketSummary>;
+export declare const TicketCreateResponse: Type.TObject<{
+    ticket: Type.TObject<{
+        id: Type.TString;
+        kind: Type.TUnion<[Type.TLiteral<"assistance">, Type.TLiteral<"evolution">]>;
+        status: Type.TUnion<[Type.TLiteral<"new">, Type.TLiteral<"in_progress">, Type.TLiteral<"closed">]>;
+        outcome: Type.TUnion<[Type.TLiteral<"done">, Type.TLiteral<"declined">, Type.TNull]>;
+        createdAt: Type.TString;
+        updatedAt: Type.TString;
+    }>;
+}>;
+export type TicketCreateResponse = Type.Static<typeof TicketCreateResponse>;
+/** Corps de la liste : vide, la requête est signée par le hub qui demande les siennes. */
+export declare const TicketListRequest: Type.TObject<{}>;
+export type TicketListRequest = Type.Static<typeof TicketListRequest>;
+export declare const TicketListResponse: Type.TObject<{
+    tickets: Type.TArray<Type.TObject<{
+        id: Type.TString;
+        kind: Type.TUnion<[Type.TLiteral<"assistance">, Type.TLiteral<"evolution">]>;
+        status: Type.TUnion<[Type.TLiteral<"new">, Type.TLiteral<"in_progress">, Type.TLiteral<"closed">]>;
+        outcome: Type.TUnion<[Type.TLiteral<"done">, Type.TLiteral<"declined">, Type.TNull]>;
+        createdAt: Type.TString;
+        updatedAt: Type.TString;
+    }>>;
+}>;
+export type TicketListResponse = Type.Static<typeof TicketListResponse>;
+/** Clé publique de scellement du central. Lue seulement hors production : en production, elle est épinglée. */
+export declare const SealKeyResponse: Type.TObject<{
+    alg: Type.TLiteral<"hpke-x25519-hkdfsha256-aes128gcm">;
+    kid: Type.TString;
+    publicKey: Type.TString;
+}>;
+export type SealKeyResponse = Type.Static<typeof SealKeyResponse>;
 /** Erreurs typées : l'add-on agit selon `error`, jamais selon le message. */
-export declare const HubErrorCode: Type.TUnion<[Type.TLiteral<"invalid_request">, Type.TLiteral<"invalid_signature">, Type.TLiteral<"unknown_hub">, Type.TLiteral<"revoked">, Type.TLiteral<"replayed">, Type.TLiteral<"code_invalid">, Type.TLiteral<"code_used">, Type.TLiteral<"code_expired">, Type.TLiteral<"key_already_enrolled">, Type.TLiteral<"unsupported_schema">]>;
+export declare const HubErrorCode: Type.TUnion<[Type.TLiteral<"invalid_request">, Type.TLiteral<"invalid_signature">, Type.TLiteral<"unknown_hub">, Type.TLiteral<"revoked">, Type.TLiteral<"replayed">, Type.TLiteral<"code_invalid">, Type.TLiteral<"code_used">, Type.TLiteral<"code_expired">, Type.TLiteral<"key_already_enrolled">, Type.TLiteral<"unsupported_schema">, Type.TLiteral<"tickets_disabled">, Type.TLiteral<"unknown_seal_key">, Type.TLiteral<"undecryptable">, Type.TLiteral<"message_too_long">, Type.TLiteral<"rate_limited">]>;
 export type HubErrorCode = Type.Static<typeof HubErrorCode>;
 export declare const HubError: Type.TObject<{
-    error: Type.TUnion<[Type.TLiteral<"invalid_request">, Type.TLiteral<"invalid_signature">, Type.TLiteral<"unknown_hub">, Type.TLiteral<"revoked">, Type.TLiteral<"replayed">, Type.TLiteral<"code_invalid">, Type.TLiteral<"code_used">, Type.TLiteral<"code_expired">, Type.TLiteral<"key_already_enrolled">, Type.TLiteral<"unsupported_schema">]>;
+    error: Type.TUnion<[Type.TLiteral<"invalid_request">, Type.TLiteral<"invalid_signature">, Type.TLiteral<"unknown_hub">, Type.TLiteral<"revoked">, Type.TLiteral<"replayed">, Type.TLiteral<"code_invalid">, Type.TLiteral<"code_used">, Type.TLiteral<"code_expired">, Type.TLiteral<"key_already_enrolled">, Type.TLiteral<"unsupported_schema">, Type.TLiteral<"tickets_disabled">, Type.TLiteral<"unknown_seal_key">, Type.TLiteral<"undecryptable">, Type.TLiteral<"message_too_long">, Type.TLiteral<"rate_limited">]>;
     message: Type.TString;
 }>;
 export type HubError = Type.Static<typeof HubError>;

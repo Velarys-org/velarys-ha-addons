@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.0-beta.1
+
+Canal bêta seulement.
+
+- Panneau « Velarys » dans la barre latérale de Home Assistant : une demande d'assistance ou une
+  idée d'évolution s'écrit là, et part chez Velarys avec l'état technique de l'installation.
+  Le message est chiffré sur le boîtier, et seul Velarys peut le lire ; le panneau affiche ensuite
+  le suivi de chaque demande (reçue, en cours, close).
+- Pas pour les urgences, et le panneau le dit : aucune permanence n'est assurée par ce canal.
+
 ## 0.2.0
 
 - Bilan de santé joint au battement, relu toutes les quinze minutes : mises à jour en attente

@@ -7,8 +7,10 @@ import { collectHealth, HealthCache } from './health.js';
 import { loadIdentity, saveIdentity } from './identity.js';
 import { log, setLogLevel } from './log.js';
 import { readOptions } from './options.js';
+import { startPanel } from './panel.js';
 import { OPTIONS_FILE } from './paths.js';
 import { SupervisorClient } from './supervisor.js';
+import { TicketService } from './tickets.js';
 
 process.on('SIGTERM', () => process.exit(0));
 process.on('SIGINT', () => process.exit(0));
@@ -29,6 +31,13 @@ const health = new HealthCache(() =>
 );
 
 log.info('Agent Velarys démarré', { version: pkg.version, contract: HUB_API_VERSION, central: options.central_url });
+
+// Panneau des demandes (ingress). Une panne du panneau n'arrête jamais le battement.
+const tickets = new TicketService({ centralUrl: options.central_url, loadIdentity: () => loadIdentity() });
+const allowedPeers = process.env['PANEL_ALLOWED_PEERS']?.split(',').map((p) => p.trim()).filter(Boolean);
+await startPanel({ tickets, agentVersion: pkg.version, ...(allowedPeers?.length ? { allowedPeers } : {}) }).catch((error: Error) =>
+  log.error('Panneau Velarys indisponible', { detail: error.message }),
+);
 
 await run({
   agentVersion: pkg.version,

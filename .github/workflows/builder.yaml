@@ -1,10 +1,11 @@
 name: Builder
 
-# Publie l'image de l'add-on quand la version de velarys/config.yaml change sur main.
-# Une version déjà publiée n'est jamais reconstruite (skip-existing).
+# Publie l'image de l'add-on quand la version de velarys/config.yaml change sur main (canal stable)
+# ou sur beta (canal bêta, versions en `x.y.z-beta.N`). Une version déjà publiée n'est jamais
+# reconstruite (skip-existing). Seul main déplace l'étiquette `latest`.
 on:
   push:
-    branches: [main]
+    branches: [main, beta]
     paths:
       - velarys/config.yaml
   workflow_dispatch:
@@ -57,7 +58,7 @@ jobs:
           image: ${{ matrix.image }}
           image-tags: |
             ${{ needs.init.outputs.version }}
-            latest
+            ${{ github.ref_name == 'main' && 'latest' || '' }}
           build-args: |
             BUILD_VERSION=${{ needs.init.outputs.version }}
             BUILD_ARCH=${{ matrix.arch }}
@@ -81,5 +82,5 @@ jobs:
           registry-prefix: ${{ env.REGISTRY_PREFIX }}
           image-tags: |
             ${{ needs.init.outputs.version }}
-            latest
+            ${{ github.ref_name == 'main' && 'latest' || '' }}
           skip-existing: ${{ needs.init.outputs.version }}

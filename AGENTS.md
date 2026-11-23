@@ -29,7 +29,16 @@ ici : ce dépôt ne porte ni chemin local, ni infrastructure, ni donnée client.
   dans `probeErrors`, jamais un battement bloqué.
 - **La clé privée ne sort pas du hub** : `/data/identity/` est exclu des sauvegardes
   (`backup_exclude` dans `config.yaml`, deux motifs car le Supervisor compare au chemin complet).
-- **Aucun port ouvert**, uniquement du HTTPS sortant vers le central.
+- **Aucun port publié sur l'hôte**, uniquement du HTTPS sortant vers le central. Le panneau Velarys
+  (ingress, `src/panel.ts`, port interne 8099) n'accepte que le proxy d'ingress du Supervisor
+  (`172.30.32.2`), exige l'en-tête `x-velarys-panel` sur toute écriture et sert une CSP stricte
+  sans aucune ressource externe (rien ne doit sortir du logement pour afficher la page).
+- **Demandes (contrat 0.4.0)** : le texte du client est scellé sur le hub (HPKE, `seal.ts` du
+  contrat) avant la signature. Pour le central de production, la clé de scellement est **épinglée**
+  dans le contrat (`PINNED_SEAL_KEYS`), jamais lue sur le réseau : le tunnel pourrait la remplacer.
+  **Rien de libre ne redescend** : le hub ne reçoit que des statuts de listes fermées, et garde sa
+  propre copie du texte (`/data/tickets.json`) pour l'afficher. Pas de canal d'urgence, pas de délai
+  affiché : le panneau le dit.
 - **`velarys/apparmor.txt` confine l'agent** (note de sécurité 8/8) : lecture de `/app`, écriture dans
   `/data` seulement, aucun programme lancé hors Node, d'où l'`ENTRYPOINT` direct du `Dockerfile` (sans
   le `docker-entrypoint.sh` de l'image, qui passe par un shell). Toute fonction qui touche un nouveau
@@ -51,12 +60,32 @@ Dans `velarys/` : Yarn 4 (`nodeLinker: node-modules`), Node 24, TypeScript, Vite
 - Essai hors Home Assistant : `DATA_DIR`, `SUPERVISOR_URL` et `SUPERVISOR_TOKEN` surchargent `/data`
   et l'API Supervisor.
 
+## Canaux : stable (`main`) et bêta (`beta`)
+
+Home Assistant ne sait pas servir deux versions d'un même add-on selon l'installation. Le canal se
+choisit donc **par l'URL du dépôt** ajoutée sur le hub :
+
+- **stable** : `https://github.com/Velarys-org/velarys-ha-addons`, branche `main`, celle des clients ;
+- **bêta** : `https://github.com/Velarys-org/velarys-ha-addons#beta`, branche `beta`, ajoutée sur les
+  seuls hubs de test. Version en `x.y.z-beta.N`, `stage: experimental`, nom suffixé « (bêta) ».
+
+Le Supervisor identifie un dépôt par l'empreinte de son URL **branche comprise** : l'add-on bêta est
+un autre add-on, avec son propre `/data` et donc **sa propre identité**. Passer un hub d'un canal à
+l'autre = désinstaller l'un, installer l'autre, réenrôler avec un nouveau code, révoquer l'ancien hub
+dans l'admin. **Jamais les deux installés sur une même machine** (deux hubs battraient). Le central
+affiche le canal, lu dans la version de l'agent.
+
+Exception assumée à « pas de branche » : `beta` est une branche de **publication**, pas de travail.
+Une fonction pas encore publiée se développe sur `beta` (jamais sur `main`, que les clients lisent :
+`config.yaml`, `DOCS.md`). Promotion : fusionner `beta` dans `main` en remettant le nom, `stage`,
+`repository.yaml` et une version sans suffixe, puis repartir `beta` de `main` au cycle suivant.
+
 ## Publication
 
 Augmenter `version` dans `velarys/config.yaml` (et `package.json`, `CHANGELOG.md`) puis pousser sur
-`main` : `.github/workflows/builder.yaml` construit l'image amd64 et aarch64 avec les actions
+`main` ou sur `beta` : `.github/workflows/builder.yaml` construit l'image amd64 et aarch64 avec les actions
 `home-assistant/builder`, puis le manifeste multi-arch `ghcr.io/velarys-org/velarys-ha-addon`. Une
-version déjà publiée n'est jamais reconstruite. **Le package GHCR doit rester public**, sinon les
+version déjà publiée n'est jamais reconstruite, et seul `main` déplace l'étiquette `latest`. **Le package GHCR doit rester public**, sinon les
 hubs ne peuvent pas le tirer.
 
-Git : commit direct sur `main`, pas de branche.
+Git : commit direct sur `main` ou `beta` (voir les canaux ci-dessus), pas d'autre branche.

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Velarys</title>
+    <link rel="stylesheet" href="panel.css" />
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="head">
+        <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M3 3h26v16a10 10 0 0 1-10 10H3z" fill="currentColor" />
+          <path d="M9 9l7 14 7-14" fill="none" stroke="#2bf0a5" stroke-width="3" stroke-linejoin="round" />
+        </svg>
+        <div>
+          <h1>Velarys</h1>
+          <p class="sub" data-t="subtitle"></p>
+        </div>
+      </header>
+
+      <section class="card">
+        <p class="intro" data-t="intro"></p>
+
+        <form id="form" novalidate>
+          <fieldset class="kinds">
+            <legend class="visually-hidden" data-t="kindLegend"></legend>
+            <label class="kind">
+              <input type="radio" name="kind" value="assistance" checked />
+              <span class="kind-body">
+                <span class="kind-title" data-t="kindAssistance"></span>
+                <span class="kind-hint" data-t="kindAssistanceHint"></span>
+              </span>
+            </label>
+            <label class="kind">
+              <input type="radio" name="kind" value="evolution" />
+              <span class="kind-body">
+                <span class="kind-title" data-t="kindEvolution"></span>
+                <span class="kind-hint" data-t="kindEvolutionHint"></span>
+              </span>
+            </label>
+          </fieldset>
+
+          <div class="field">
+            <label for="message" data-t="messageLabel"></label>
+            <textarea id="message" name="message" rows="6" maxlength="4000" required></textarea>
+            <div class="field-foot">
+              <span class="hint" data-t="privacyHint"></span>
+              <span class="counter" id="counter" aria-live="polite"></span>
+            </div>
+          </div>
+
+          <div class="urgent" role="note">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 1 21h22L12 2zm1 15h-2v-2h2v2zm0-4h-2V9h2v4z" fill="currentColor" /></svg>
+            <p><strong data-t="urgentTitle"></strong> <span data-t="urgentText"></span></p>
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="btn" id="send" data-t="send"></button>
+            <p class="status" id="status" role="status" aria-live="polite"></p>
+          </div>
+          <p class="fine" data-t="encryption"></p>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2 data-t="listTitle"></h2>
+        <p class="status" id="list-status" role="status"></p>
+        <ul class="tickets" id="tickets"></ul>
+      </section>
+    </main>
+    <noscript>Velarys&nbsp;: JavaScript est nécessaire pour envoyer une demande.</noscript>
+    <script src="panel.js"></script>
+  </body>
+</html>
