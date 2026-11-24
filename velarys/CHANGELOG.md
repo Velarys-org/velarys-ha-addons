@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0-beta.8
+
+Canal bêta seulement.
+
+- « Suivre Velarys » sur un fond neutre, sans teinte ; le motif de la marque reste en filigrane.
+
 ## 0.3.0-beta.7
 
 Canal bêta seulement.

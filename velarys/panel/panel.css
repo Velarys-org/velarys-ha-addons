@@ -336,7 +336,7 @@ h2 {
   border-top: 1px solid var(--line);
 }
 
-/* Bloc d'une autre nature que les cartes : pas de bordure, fond doux, filigrane du motif de marque,
+/* Bloc d'une autre nature que les cartes : pas de bordure, fond neutre (pas de teinte), filigrane du motif de marque,
    dense en bas à gauche et qui se dissout vers le haut à droite (45°). */
 .follow {
   position: relative;
@@ -344,8 +344,7 @@ h2 {
   overflow: hidden;
   padding: 22px;
   border-radius: var(--radius);
-  background: var(--bg-soft);
-  background: color-mix(in srgb, var(--mint-soft) 55%, var(--bg));
+  background: var(--bg);
 }
 
 .follow::before {
