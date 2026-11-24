@@ -32,7 +32,9 @@ ici : ce dépôt ne porte ni chemin local, ni infrastructure, ni donnée client.
 - **Aucun port publié sur l'hôte**, uniquement du HTTPS sortant vers le central. Le panneau Velarys
   (ingress, `src/panel.ts`, port interne 8099) n'accepte que le proxy d'ingress du Supervisor
   (`172.30.32.2`), exige l'en-tête `x-velarys-panel` sur toute écriture et sert une CSP stricte
-  sans aucune ressource externe (rien ne doit sortir du logement pour afficher la page).
+  sans aucune ressource externe (rien ne doit sortir du logement pour afficher la page). Le
+  Supervisor installe un panneau d'ingress **masqué** (`ingress_panel: false`) : l'agent l'affiche
+  une seule fois (témoin `/data/panel-shown`), un client qui le masque ensuite n'est pas contredit.
 - **Demandes (contrat 0.4.0)** : le texte du client est scellé sur le hub (HPKE, `seal.ts` du
   contrat) avant la signature. Pour le central de production, la clé de scellement est **épinglée**
   dans le contrat (`PINNED_SEAL_KEYS`), jamais lue sur le réseau : le tunnel pourrait la remplacer.
