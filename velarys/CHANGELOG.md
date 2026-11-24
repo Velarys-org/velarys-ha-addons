@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0-beta.5
+
+Canal bêta seulement.
+
+- Après l'envoi d'une demande, la confirmation s'affiche dans la fenêtre elle-même, avec « Voir ma
+  demande » et « Fermer ».
+
 ## 0.3.0-beta.4
 
 Canal bêta seulement.

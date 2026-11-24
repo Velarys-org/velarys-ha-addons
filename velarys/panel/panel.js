@@ -32,7 +32,10 @@ const T = {
     cancel: 'Annuler',
     send: 'Envoyer',
     sending: 'Envoi…',
-    sent: 'Merci, votre demande est partie. Velarys vous répond ici, ou par téléphone.',
+    sentTitle: 'Demande envoyée',
+    sent: 'Merci. Velarys vous répond ici, ou par téléphone.',
+    viewRequest: 'Voir ma demande',
+    close: 'Fermer',
     encryption: 'Votre message est chiffré sur ce boîtier, et seul Velarys peut le lire.',
     listTitle: 'Vos demandes',
     empty: 'Vous n’avez encore envoyé aucune demande.',
@@ -97,7 +100,10 @@ const T = {
     cancel: 'Cancel',
     send: 'Send',
     sending: 'Sending…',
-    sent: 'Thank you, your request has been sent. Velarys will reply here, or by phone.',
+    sentTitle: 'Request sent',
+    sent: 'Thank you. Velarys will reply here, or by phone.',
+    viewRequest: 'View my request',
+    close: 'Close',
     encryption: 'Your message is encrypted on this device, and only Velarys can read it.',
     listTitle: 'Your requests',
     empty: 'You have not sent any request yet.',
@@ -295,6 +301,7 @@ async function refresh() {
 // --- Nouvelle demande --------------------------------------------------------------------------
 
 let newKind = 'assistance';
+let lastSentId = null;
 
 function updateCounter() {
   const n = chars($('new-message').value.trim());
@@ -308,6 +315,8 @@ function openNew(kind) {
   $('new-label').textContent = t.newLabel[kind];
   $('new-message').value = '';
   setStatus($('new-status'), '');
+  $('new-compose').hidden = false;
+  $('new-sent').hidden = true;
   updateCounter();
   $('new-dialog').showModal();
   $('new-message').focus();
@@ -327,11 +336,13 @@ $('new-form').addEventListener('submit', async (event) => {
   send.disabled = true;
   send.textContent = t.sending;
   try {
-    await api('POST', 'api/tickets', { kind: newKind, message: text });
-    $('new-dialog').close();
-    setStatus($('list-status'), t.sent, 'ok');
+    const created = await api('POST', 'api/tickets', { kind: newKind, message: text });
+    lastSentId = created.id;
+    // La confirmation reste dans la fenêtre : c'est là que le client regarde.
+    $('new-compose').hidden = true;
+    $('new-sent').hidden = false;
+    $('new-view').focus();
     await refresh();
-    setStatus($('list-status'), t.sent, 'ok');
   } catch (error) {
     setStatus($('new-status'), errorText(error.code), 'warn');
   } finally {
@@ -439,6 +450,11 @@ for (const dialog of document.querySelectorAll('dialog')) {
     if (event.target === dialog) dialog.close(); // clic sur le fond
   });
 }
+$('new-view').addEventListener('click', () => {
+  $('new-dialog').close();
+  if (lastSentId) location.hash = `#/demande/${lastSentId}`;
+});
+
 for (const btn of document.querySelectorAll('[data-close]')) {
   btn.addEventListener('click', () => btn.closest('dialog').close());
 }

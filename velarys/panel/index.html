@@ -98,6 +98,7 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
           </button>
         </div>
+        <div id="new-compose">
         <label for="new-message" class="field-label" id="new-label"></label>
         <textarea id="new-message" rows="7" maxlength="4000"></textarea>
         <div class="field-foot">
@@ -111,6 +112,19 @@
           <button type="submit" class="btn" id="new-send" data-t="send"></button>
         </div>
         <p class="fine" data-t="encryption"></p>
+        </div>
+        <!-- Confirmation, dans la fenêtre elle-même -->
+        <div class="sent" id="new-sent" hidden role="status" aria-live="polite">
+          <span class="sent-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
+          </span>
+          <p class="sent-title" data-t="sentTitle"></p>
+          <p class="sent-text" data-t="sent"></p>
+          <div class="dialog-actions">
+            <button type="button" class="btn btn-ghost" id="new-view" data-t="viewRequest"></button>
+            <button type="button" class="btn" data-close data-t="close"></button>
+          </div>
+        </div>
       </form>
     </dialog>
 
