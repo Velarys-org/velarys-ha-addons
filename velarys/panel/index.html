@@ -49,15 +49,22 @@
         </button>
       </section>
 
-      <p class="notice" role="note">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 1 21h22L12 2zm1 15h-2v-2h2v2zm0-4h-2V9h2v4z" /></svg>
-        <span><strong data-t="urgentTitle"></strong> <span data-t="urgentText"></span></span>
-      </p>
 
       <section class="requests" aria-labelledby="list-title">
         <h2 id="list-title" data-t="listTitle"></h2>
-        <p class="status" id="list-status" role="status"></p>
-        <ul class="tickets" id="tickets"></ul>
+        <!-- Le carnet : un seul objet, des lignes ; les terminées s'y rangent, repliées dans son pied. -->
+        <div class="log">
+          <ul class="log-list" id="tickets"></ul>
+          <p class="log-empty status" id="list-status" role="status"></p>
+          <div class="log-closed" id="closed-wrap" hidden>
+            <p class="log-sub" data-t="closedLabel"></p>
+            <ul class="log-list" id="tickets-closed"></ul>
+          </div>
+          <button type="button" class="log-toggle" id="toggle-closed" hidden aria-expanded="false" aria-controls="closed-wrap">
+            <span id="toggle-closed-label"></span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </button>
+        </div>
       </section>
 
 
@@ -66,15 +73,18 @@
       <!-- Suivre Velarys : liens sortants seulement (nouvel onglet), rien n'est chargé depuis l'extérieur.
            Adresses alignées sur le site : src/data/social.ts et le CTA « lettre » du blog. -->
       <section class="follow" aria-labelledby="follow-title">
-        <h2 id="follow-title" data-t="followTitle"></h2>
         <div class="follow-letter">
-          <p data-t="letterText"></p>
-          <a class="btn btn-ghost" href="https://lists.velarys.fr/subscription/form" target="_blank" rel="noopener noreferrer">
+          <div>
+            <h2 id="follow-title" data-t="followTitle"></h2>
+            <p data-t="letterText"></p>
+          </div>
+          <a class="btn btn-outline" href="https://lists.velarys.fr/subscription/form" target="_blank" rel="noopener noreferrer">
             <span data-t="letterCta"></span>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
           </a>
         </div>
-        <div class="socials">
+        <nav class="socials" aria-labelledby="socials-title">
+          <span class="socials-title" id="socials-title" data-t="socialsTitle"></span>
             <a class="social" href="https://www.instagram.com/smarthome.velarys" target="_blank" rel="noopener noreferrer">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M16.9 7.1h.01"/></svg>
               <span>Instagram</span>
@@ -91,7 +101,7 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><g transform="translate(12 12) scale(.52) translate(-12 -12)" stroke-width="3"><path d="M19 7.5c-1.4-3-3.7-4.5-7-4.5-5 0-7 4.5-7 9s2 9 7 9c4 0 6-2 6-5s-2.5-4.5-6-4.5c-2 0-3 1-3 2s1 2 2.5 2c2.5 0 3.5-2.5 3.5-5.5 0-2-1-3-2.5-3-1 0-2 .5-2.5 1.5"/></g></svg>
               <span>Threads</span>
             </a>
-        </div>
+        </nav>
       </section>
       </div>
 
@@ -128,6 +138,7 @@
     <dialog id="new-dialog" aria-labelledby="new-title">
       <form id="new-form" method="dialog" novalidate>
         <div class="dialog-head">
+          <span class="dialog-icon" id="new-icon" aria-hidden="true"></span>
           <h2 id="new-title"></h2>
           <button type="button" class="close" data-close aria-label="Fermer">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
@@ -140,13 +151,21 @@
           <span data-t="privacyHint"></span>
           <span class="counter" id="new-counter" aria-live="polite"></span>
         </div>
-        <p class="urgent" role="note"><strong data-t="urgentTitle"></strong> <span data-t="urgentText"></span></p>
+        <p class="notice" role="note">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 1 21h22L12 2zm1 15h-2v-2h2v2zm0-4h-2V9h2v4z" /></svg>
+          <span><strong data-t="urgentTitle"></strong> <span data-t="urgentText"></span></span>
+        </p>
         <p class="status" id="new-status" role="status" aria-live="polite"></p>
-        <div class="dialog-actions">
-          <button type="button" class="btn btn-ghost" data-close data-t="cancel"></button>
-          <button type="submit" class="btn" id="new-send" data-t="send"></button>
+        <div class="dialog-foot">
+          <p class="secure">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h-1V6A5 5 0 0 0 7 6v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zM9 6a3 3 0 0 1 6 0v2H9V6zm4 9.73V18h-2v-2.27a2 2 0 1 1 2 0z" /></svg>
+            <span data-t="encryption"></span>
+          </p>
+          <div class="dialog-actions">
+            <button type="button" class="btn btn-text" data-close data-t="cancel"></button>
+            <button type="submit" class="btn" id="new-send" data-t="send"></button>
+          </div>
         </div>
-        <p class="fine" data-t="encryption"></p>
         </div>
         <!-- Confirmation, dans la fenêtre elle-même -->
         <div class="sent" id="new-sent" hidden role="status" aria-live="polite">

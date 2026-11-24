@@ -21,8 +21,9 @@ const T = {
     ctaIntervention: 'Demander une intervention',
     ctaInterventionHint: 'Autoriser Velarys à intervenir sur votre installation.',
     soon: 'Bientôt',
-    followTitle: 'Suivre Velarys',
+    followTitle: 'La lettre de Velarys',
     letterText: 'Nos chantiers et nos conseils, un e-mail par mois au plus.',
+    socialsTitle: 'Nous suivre',
     letterCta: 'Recevoir la lettre',
     newTitle: { assistance: 'Signaler un problème', evolution: 'Proposer une idée' },
     newLabel: {
@@ -42,6 +43,10 @@ const T = {
     encryption: 'Votre message est chiffré sur ce boîtier, et seul Velarys peut le lire.',
     listTitle: 'Vos demandes',
     empty: 'Vous n’avez encore envoyé aucune demande.',
+    noOpen: 'Aucune demande en cours.',
+    closedLabel: 'Terminées',
+    showClosed: (n) => `Afficher les demandes terminées (${n})`,
+    hideClosed: 'Masquer les demandes terminées',
     noText: 'Texte non conservé sur ce boîtier.',
     loading: 'Chargement…',
     listError: 'Vos demandes ne peuvent pas s’afficher pour l’instant.',
@@ -92,8 +97,9 @@ const T = {
     ctaIntervention: 'Request an intervention',
     ctaInterventionHint: 'Allow Velarys to work on your installation.',
     soon: 'Coming soon',
-    followTitle: 'Follow Velarys',
+    followTitle: 'The Velarys newsletter',
     letterText: 'Our projects and tips, one email a month at most.',
+    socialsTitle: 'Follow us',
     letterCta: 'Get the newsletter',
     newTitle: { assistance: 'Report a problem', evolution: 'Suggest an idea' },
     newLabel: {
@@ -113,6 +119,10 @@ const T = {
     encryption: 'Your message is encrypted on this device, and only Velarys can read it.',
     listTitle: 'Your requests',
     empty: 'You have not sent any request yet.',
+    noOpen: 'No request in progress.',
+    closedLabel: 'Closed',
+    showClosed: (n) => `Show closed requests (${n})`,
+    hideClosed: 'Hide closed requests',
     noText: 'Text not kept on this device.',
     loading: 'Loading…',
     listError: 'Your requests cannot be shown right now.',
@@ -253,43 +263,100 @@ function messageText(m) {
 
 // --- Liste -------------------------------------------------------------------------------------
 
-function renderList() {
-  const list = $('tickets');
-  list.replaceChildren();
-  if (tickets.length === 0) return setStatus($('list-status'), t.empty);
-  setStatus($('list-status'), '');
-  for (const ticket of tickets) {
-    const li = document.createElement('li');
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'ticket';
-    btn.addEventListener('click', () => {
-      location.hash = `#/demande/${ticket.id}`;
-    });
-
-    const head = document.createElement('span');
-    head.className = 'ticket-head';
-    const kind = document.createElement('span');
-    kind.className = 'ticket-kind';
-    kind.textContent = t.kind[ticket.kind] || ticket.kind;
-    head.append(kind, timeEl(ticket.createdAt, 'ticket-date'), pill(ticket));
-
-    const text = document.createElement('span');
-    text.className = ticket.text === null ? 'ticket-text muted' : 'ticket-text';
-    // textContent, jamais innerHTML : aucun texte n'est interprété.
-    text.textContent = ticket.text === null ? t.noText : ticket.text;
-    btn.append(head, text);
-
-    if (hasNewReply(ticket)) {
-      const flag = document.createElement('span');
-      flag.className = 'new-reply';
-      flag.textContent = t.newReply;
-      btn.append(flag);
-    }
-    li.append(btn);
-    list.append(li);
+const CLOSED_KEY = 'velarys-show-closed';
+function readShowClosed() {
+  try {
+    return localStorage.getItem(CLOSED_KEY) === '1';
+  } catch {
+    return false;
   }
 }
+let showClosed = readShowClosed();
+
+/** Une ligne du carnet : carré d'état, type et date, extrait, état en mots. */
+function ticketItem(ticket) {
+  const li = document.createElement('li');
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = `row row-${ticket.status}`;
+  btn.addEventListener('click', () => {
+    location.hash = `#/demande/${ticket.id}`;
+  });
+
+  const mark = document.createElement('span');
+  mark.className = 'row-mark';
+  mark.setAttribute('aria-hidden', 'true');
+
+  const main = document.createElement('span');
+  main.className = 'row-main';
+
+  const head = document.createElement('span');
+  head.className = 'row-head';
+  const kind = document.createElement('span');
+  kind.className = 'row-kind';
+  kind.textContent = t.kind[ticket.kind] || ticket.kind;
+  head.append(kind, timeEl(ticket.createdAt, 'row-date'));
+
+  const text = document.createElement('span');
+  text.className = ticket.text === null ? 'row-text muted' : 'row-text';
+  // textContent, jamais innerHTML : aucun texte n'est interprété.
+  text.textContent = ticket.text === null ? t.noText : ticket.text;
+
+  const foot = document.createElement('span');
+  foot.className = 'row-foot';
+  const state = document.createElement('span');
+  state.className = 'row-state';
+  state.textContent = statusLabel(ticket);
+  foot.append(state);
+  if (hasNewReply(ticket)) {
+    const flag = document.createElement('span');
+    flag.className = 'new-reply';
+    flag.textContent = t.newReply;
+    foot.append(flag);
+  }
+  main.append(head, text, foot);
+
+  const chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  chevron.setAttribute('viewBox', '0 0 24 24');
+  chevron.setAttribute('class', 'row-go');
+  chevron.setAttribute('aria-hidden', 'true');
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', 'M9 6l6 6-6 6');
+  chevron.append(path);
+
+  btn.append(mark, main, chevron);
+  li.append(btn);
+  return li;
+}
+
+/** Ouvertes en haut du carnet ; terminées repliées dans son pied. */
+function renderList() {
+  const open = tickets.filter((x) => x.status !== 'closed');
+  const closed = tickets.filter((x) => x.status === 'closed');
+  $('tickets').replaceChildren(...open.map(ticketItem));
+  $('tickets-closed').replaceChildren(...closed.map(ticketItem));
+
+  if (tickets.length === 0) setStatus($('list-status'), t.empty);
+  else if (open.length === 0) setStatus($('list-status'), t.noOpen);
+  else setStatus($('list-status'), '');
+
+  const toggle = $('toggle-closed');
+  toggle.hidden = closed.length === 0;
+  toggle.setAttribute('aria-expanded', String(showClosed));
+  toggle.classList.toggle('open', showClosed);
+  $('toggle-closed-label').textContent = showClosed ? t.hideClosed : t.showClosed(closed.length);
+  $('closed-wrap').hidden = !showClosed || closed.length === 0;
+}
+
+$('toggle-closed').addEventListener('click', () => {
+  showClosed = !showClosed;
+  try {
+    localStorage.setItem(CLOSED_KEY, showClosed ? '1' : '0');
+  } catch {
+    /* sans stockage, le choix vaut pour cette visite */
+  }
+  renderList();
+});
 
 async function refresh() {
   if (!tickets.length) setStatus($('list-status'), t.loading);
@@ -300,6 +367,8 @@ async function refresh() {
     if (openTicketId) renderThread();
   } catch (error) {
     $('tickets').replaceChildren();
+    $('tickets-closed').replaceChildren();
+    $('toggle-closed').hidden = true;
     setStatus($('list-status'), ['not_enrolled', 'revoked'].includes(error.code) ? errorText(error.code) : t.listError, 'warn');
   }
 }
@@ -318,6 +387,9 @@ function updateCounter() {
 function openNew(kind) {
   newKind = kind;
   $('new-title').textContent = t.newTitle[kind];
+  // L'icône de la carte cliquée, pour que la fenêtre se rattache à l'action choisie.
+  const icon = document.querySelector(`.action[data-kind="${kind}"] .action-icon svg`);
+  $('new-icon').replaceChildren(...(icon ? [icon.cloneNode(true)] : []));
   $('new-label').textContent = t.newLabel[kind];
   $('new-message').value = '';
   setStatus($('new-status'), '');

@@ -47,12 +47,20 @@ ici : ce dépôt ne porte ni chemin local, ni infrastructure, ni donnée client.
   libre signé par passkey (WebAuthn), vérifié **sur le hub** contre `PINNED_REPLY_KEYS` avant tout
   affichage. Une signature refusée = message masqué, jamais affiché « à tout hasard ». La réponse
   arrive scellée pour la clé X25519 du hub (`identity.json`, hors sauvegardes, envoyée signée).
+- **Fenêtre de création** : l'icône de l'action choisie en tête, l'avertissement au même style que
+  celui de la vue (encadré ambre léger), la garantie de chiffrement à côté du bouton d'envoi, et
+  « Annuler » en simple texte. Sous 560 px, la fenêtre devient un panneau qui monte du bas.
+- **Avertissement « urgence »** : dans la fenêtre de création (là où le client décide d'écrire) et
+  au bas de la vue d'une demande ; pas sur l'accueil, où il doublonnait (choix d'Arnaud).
 - **Panneau pour des personnes peu techniques** : deux grandes actions en haut (problème, et
-  intervention désactivée « Bientôt » en attendant l'usecase d'accès distant), l'avertissement
-  « urgence » juste dessous (encadré ambre léger, là où le client décide d'écrire), la liste des
-  demandes, puis un filet et « Suivre
-  Velarys » sur fond neutre sans teinte (le vert a été refusé), motif ribbon de la marque en filigrane (même tuile que `--vproof-v` du
-  site, dissoute à 45°) : lettre d'information et réseaux, liens sortants en
+  intervention désactivée « Bientôt » en attendant l'usecase d'accès distant), la liste des
+  demandes en **carnet** (un seul objet à lignes séparées par un filet, pas de cartes : un carré
+  d'état à la signature de la marque, l'état en mot coloré, la menthe réservée au point « Nouvelle
+  réponse » ; ouvertes en haut, terminées repliées dans le pied du carnet ; pas de pagination, les
+  50 plus récentes du contrat suffisent au rythme d'un client), puis un filet et le bloc lettre + réseaux
+  (« La lettre de Velarys » avec son bouton, action principale ; « Nous suivre » en simples liens
+  dessous) sur fond neutre sans teinte (le vert a été refusé), motif ribbon de la marque en filigrane (même tuile que `--vproof-v` du
+  site, dense dans le coin bas-gauche et dissoute vers le haut-droite pour laisser le titre net) : lettre d'information et réseaux, liens sortants en
   nouvel onglet ; adresses recopiées de `src/data/social.ts` du site, à changer des deux côtés).
   « Proposer une idée » est **mis de côté** (2026-11-24, « ça ne presse pas ») : la carte est retirée,
   le type `evolution` reste au contrat et au central, les idées déjà envoyées restent lisibles. Création en fenêtre ; une demande s'ouvre en **vue** du panneau

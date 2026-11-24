@@ -14,6 +14,7 @@
   --page: #f7f6f4;
   --amber: #92400e;
   --amber-bg: #fef3c7;
+  --amber-mark: #d97706;
   --blue: #1d4ed8;
   --blue-bg: #dbeafe;
   --pattern-opacity: 0.06;
@@ -40,6 +41,7 @@
     --mint-soft: #123a2b;
     --amber: #fbbf24;
     --amber-bg: #3a2c0c;
+    --amber-mark: #f59e0b;
     --pattern-opacity: 0.035;
     --amber-soft: #2a2110;
     --amber-line: #4a3814;
@@ -207,59 +209,94 @@ h2 {
 }
 
 .requests h2 {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
-.tickets {
+/* Le carnet des demandes : un seul objet, des lignes séparées par un filet. */
+.log {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.log-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  gap: 10px;
 }
 
-.ticket {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.log-list li + li .row,
+.log-closed .log-list li:first-child .row {
+  border-top: 1px solid var(--line);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 12px 1fr 18px;
+  gap: 14px;
+  align-items: start;
   width: 100%;
-  padding: 14px 16px;
+  padding: 16px 18px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
   font: inherit;
   text-align: left;
-  color: var(--ink);
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
   cursor: pointer;
 }
 
-.ticket:hover {
-  border-color: var(--ink-3);
+.row:hover {
+  background: var(--bg-soft);
 }
 
-.ticket:focus-visible {
+.row:focus-visible {
   outline: 2px solid var(--mint);
-  outline-offset: 2px;
+  outline-offset: -2px;
 }
 
-.ticket-head {
+/* Carré d'état à la signature de la marque : coin haut-gauche net, les autres arrondis. */
+.row-mark {
+  width: 12px;
+  height: 12px;
+  margin-top: 6px;
+  border-radius: 1px 4px 6px 4px;
+  background: var(--ink-3);
+}
+
+.row-new .row-mark {
+  background: var(--blue);
+}
+
+.row-in_progress .row-mark {
+  background: var(--amber-mark);
+}
+
+.row-main {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
 }
 
-.ticket-kind {
+.row-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.row-kind {
   font-weight: 600;
 }
 
-.ticket-date {
+.row-date {
+  flex: none;
   color: var(--ink-3);
-  font-size: 0.88rem;
-  margin-right: auto;
+  font-size: 0.86rem;
 }
 
-.ticket-text {
+.row-text {
   color: var(--ink-2);
   overflow: hidden;
   display: -webkit-box;
@@ -268,14 +305,140 @@ h2 {
   overflow-wrap: anywhere;
 }
 
+.row-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+  font-size: 0.88rem;
+}
+
+.row-state {
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.row-new .row-state {
+  color: var(--blue);
+}
+
+.row-in_progress .row-state {
+  color: var(--amber);
+}
+
+.row-go {
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.row:hover .row-go {
+  stroke: var(--ink);
+}
+
+/* Terminées : la même ligne, en retrait de ton. */
+.row-closed .row-kind,
+.row-closed .row-text {
+  color: var(--ink-3);
+}
+
+.log-empty {
+  margin: 0;
+  padding: 16px 18px 16px 44px;
+  color: var(--ink-3);
+}
+
+.log-empty:empty {
+  display: none;
+}
+
+.log-sub {
+  margin: 0;
+  padding: 14px 18px 6px 44px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-3);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.log-sub + .log-list li:first-child .row {
+  border-top: 0;
+}
+
+/* Pied du carnet : aligné sur la colonne du texte, discret. */
+.log-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 13px 18px 13px 44px;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: var(--bg-soft);
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.log-toggle:hover {
+  color: var(--ink);
+}
+
+.log-toggle:focus-visible {
+  outline: 2px solid var(--mint);
+  outline-offset: -2px;
+}
+
+.log-toggle svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.15s;
+}
+
+.log-toggle.open svg {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .log-toggle svg {
+    transition: none;
+  }
+}
+
+/* Une seule ligne, vide ou non : pas de pied ni de liste à séparer. */
+.log-list:empty {
+  display: none;
+}
+
+.log-list:empty + .log-empty:empty + .log-closed[hidden] + .log-toggle {
+  border-top: 0;
+}
+
 .new-reply {
-  align-self: flex-start;
-  padding: 2px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* Le seul usage de la menthe dans la liste : une réponse de Velarys à lire. */
+.new-reply::before {
+  content: '';
+  width: 8px;
+  height: 8px;
   border-radius: 999px;
   background: var(--mint);
-  color: #211f1c;
-  font-size: 0.8rem;
-  font-weight: 600;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mint) 25%, transparent);
 }
 
 .pill {
@@ -336,13 +499,13 @@ h2 {
   border-top: 1px solid var(--line);
 }
 
-/* Bloc d'une autre nature que les cartes : pas de bordure, fond neutre (pas de teinte), filigrane du motif de marque,
-   dense en bas à gauche et qui se dissout vers le haut à droite (45°). */
+/* Bloc d'une autre nature que les cartes : pas de bordure, fond neutre, filigrane du motif de
+   marque dense dans le coin bas-gauche et dissous vers le haut-droite, pour laisser le titre net. */
 .follow {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  padding: 22px;
+  padding: 22px 22px 18px;
   border-radius: var(--radius);
   background: var(--bg);
 }
@@ -354,20 +517,24 @@ h2 {
   z-index: -1;
   background: var(--ink);
   opacity: var(--pattern-opacity);
-  -webkit-mask: var(--vproof-v) 0 0 / 27px 58px repeat, linear-gradient(45deg, #000 0%, transparent 70%);
+  -webkit-mask: var(--vproof-v) 0 0 / 27px 58px repeat, radial-gradient(120% 150% at 0% 100%, #000 0%, transparent 58%);
   -webkit-mask-composite: source-in;
-  mask: var(--vproof-v) 0 0 / 27px 58px repeat, linear-gradient(45deg, #000 0%, transparent 70%);
+  mask: var(--vproof-v) 0 0 / 27px 58px repeat, radial-gradient(120% 150% at 0% 100%, #000 0%, transparent 58%);
   mask-composite: intersect;
   pointer-events: none;
 }
 
+/* La lettre : l'action principale du bloc. */
 .follow-letter {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 10px 16px;
-  margin: 10px 0 14px;
+  gap: 14px 24px;
+}
+
+.follow-letter h2 {
+  margin: 0 0 4px;
 }
 
 .follow-letter p {
@@ -375,56 +542,65 @@ h2 {
   color: var(--ink-2);
 }
 
-.follow-letter .btn {
-  background: var(--bg);
+.btn.btn-outline {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 9px 16px;
-  text-decoration: none;
+  padding: 10px 18px;
+  border-color: var(--ink);
+  background: var(--bg);
   color: var(--ink);
+  text-decoration: none;
 }
 
-.follow-letter .btn svg {
+.btn.btn-outline svg {
   width: 16px;
   height: 16px;
 }
 
+/* Les réseaux : secondaires, de simples liens. */
 .socials {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  align-items: center;
+  gap: 6px 20px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.socials-title {
+  color: var(--ink-3);
+  font-size: 0.88rem;
+  font-weight: 600;
 }
 
 .social {
-  background: var(--bg);
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 14px 7px 10px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--ink);
-  text-decoration: none;
+  gap: 7px;
+  padding: 4px 0;
+  color: var(--ink-2);
   font-size: 0.92rem;
+  text-decoration: none;
 }
 
 .social:hover {
-  border-color: var(--ink-3);
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-.social:focus-visible,
-.follow-letter .btn:focus-visible {
+.social:focus-visible {
   outline: 2px solid var(--mint);
   outline-offset: 2px;
-  box-shadow: none;
+  border-radius: 4px;
 }
 
 .social svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
-
 
 /* --- Fenêtres --- */
 dialog {
@@ -443,6 +619,54 @@ dialog::backdrop {
 }
 
 dialog[open] {
+  animation: dialog-in 0.18s ease-out;
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* Sur téléphone : un panneau qui monte du bas, le geste attendu. */
+@media (max-width: 560px) {
+  dialog {
+    width: 100%;
+    max-width: 100%;
+    max-height: 92vh;
+    margin: auto 0 0;
+    padding: 20px 18px calc(18px + env(safe-area-inset-bottom));
+    border-width: 1px 0 0;
+    border-radius: 3px 20px 0 0;
+  }
+
+  dialog[open] {
+    animation: sheet-in 0.22s ease-out;
+  }
+
+  .dialog-foot .dialog-actions {
+    width: 100%;
+  }
+
+  .dialog-foot .dialog-actions .btn {
+    flex: 1;
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  dialog[open] {
+    animation: none;
+  }
+}
+
+dialog[open] {
   display: flex;
   flex-direction: column;
 }
@@ -454,10 +678,36 @@ dialog[open] {
 
 .dialog-head {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 18px;
+}
+
+.dialog-head h2 {
+  margin-right: auto;
+  font-size: 1.25rem;
+}
+
+.dialog-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 3px 11px 14px 11px;
+  background: var(--mint-soft);
+  color: var(--mint-ink);
+}
+
+.dialog-icon:empty {
+  display: none;
+}
+
+.dialog-icon svg {
+  width: 21px;
+  height: 21px;
+  fill: currentColor;
+  transform: translate(-1px, -1px);
 }
 
 .close {
@@ -484,7 +734,8 @@ dialog[open] {
 
 .field-label {
   display: block;
-  font-weight: 600;
+  font-weight: 500;
+  color: var(--ink-2);
   margin-bottom: 8px;
 }
 
@@ -500,9 +751,9 @@ textarea {
 }
 
 textarea:focus {
-  outline: 2px solid var(--mint);
-  outline-offset: 1px;
-  border-color: transparent;
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mint) 35%, transparent);
 }
 
 .field-foot {
@@ -524,20 +775,58 @@ textarea:focus {
   font-weight: 600;
 }
 
-.urgent {
-  margin: 14px 0 0;
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  background: var(--amber-bg);
-  color: var(--amber);
-  font-size: 0.88rem;
-}
-
 .dialog-actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
   margin-top: 14px;
+}
+
+#new-dialog .notice {
+  margin-top: 16px;
+}
+
+/* Pied de la fenêtre : la garantie de chiffrement à côté de l'envoi qu'elle rassure. */
+.dialog-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  margin-top: 18px;
+}
+
+.dialog-foot .dialog-actions {
+  margin-top: 0;
+}
+
+.secure {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: 1 1 220px;
+  margin: 0;
+  color: var(--ink-3);
+  font-size: 0.84rem;
+}
+
+.secure svg {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  fill: currentColor;
+}
+
+.btn.btn-text {
+  border-color: transparent;
+  background: transparent;
+  color: var(--ink-2);
+}
+
+.btn.btn-text:hover:not(:disabled) {
+  background: var(--bg-soft);
+  color: var(--ink);
+  box-shadow: none;
 }
 
 .btn {
@@ -584,12 +873,6 @@ textarea:focus {
 
 .status[data-tone='warn'] {
   color: var(--amber);
-}
-
-.fine {
-  margin: 12px 0 0;
-  font-size: 0.8rem;
-  color: var(--ink-3);
 }
 
 /* --- Fil --- */
@@ -759,7 +1042,3 @@ textarea:focus {
   white-space: nowrap;
 }
 
-/* L'avertissement suit directement les deux actions. */
-.actions-grid + .notice {
-  margin-top: 14px;
-}

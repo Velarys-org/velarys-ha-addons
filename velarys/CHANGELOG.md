@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.0-beta.10
+
+Canal bêta seulement.
+
+- Vos demandes en un seul carnet : l'état en clair sur chaque ligne, les demandes en cours en haut,
+  les terminées rangées et repliées en bas du carnet.
+- Fenêtre de création plus claire, avec la garantie de chiffrement à côté du bouton d'envoi ; sur
+  téléphone, elle s'ouvre comme un panneau qui monte du bas.
+- L'avertissement « urgence » reste dans la fenêtre de création et sur la page d'une demande, plus
+  sur l'accueil.
+- Bas de page : la lettre d'information d'abord, les réseaux sociaux en simples liens.
+
 ## 0.3.0-beta.9
 
 Canal bêta seulement.
