@@ -109,6 +109,20 @@ export class SupervisorClient {
 
 
   /**
+   * Affiche le panneau Velarys dans la barre latérale. Le Supervisor l'installe masqué
+   * (`ingress_panel: false`), où un client ne le trouverait pas. Seul ce réglage est envoyé : les
+   * options de l'add-on n'y sont pas touchées.
+   */
+  async showIngressPanel(): Promise<boolean> {
+    try {
+      const res = await this.call('POST', '/addons/self/options', { ingress_panel: true });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
    * Retire le code d'enrôlement des options une fois utilisé. Les options sont remplacées en bloc,
    * d'où l'envoi de toutes les autres telles quelles.
    */

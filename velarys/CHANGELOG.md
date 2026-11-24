@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0-beta.2
+
+Canal bêta seulement.
+
+- Le panneau Velarys apparaît dans la barre latérale dès le premier démarrage (Home Assistant
+  l'installe masqué). Le masquer ensuite reste possible, et il ne revient pas.
+
 ## 0.3.0-beta.1
 
 Canal bêta seulement.

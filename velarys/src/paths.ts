@@ -8,3 +8,5 @@ export const IDENTITY_DIR = join(DATA_DIR, 'identity');
 export const IDENTITY_FILE = join(IDENTITY_DIR, 'identity.json');
 /** Copie locale des demandes envoyées depuis ce hub (le texte du client), pour le panneau. */
 export const TICKETS_FILE = join(DATA_DIR, 'tickets.json');
+/** Témoin : le panneau a déjà été affiché une fois ; le masquer ensuite reste le choix du client. */
+export const PANEL_SHOWN_FILE = join(DATA_DIR, 'panel-shown');
