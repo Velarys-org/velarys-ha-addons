@@ -184,6 +184,25 @@ describe('demandes depuis le hub', () => {
     ]);
   });
 
+  it('range dans les archives une demande close depuis 90 jours sans mouvement, jamais une ouverte', async () => {
+    const tickets = service();
+    await tickets.create('assistance', 'Ancienne panne');
+    const old = new Date(Date.now() - 91 * 86_400_000).toISOString();
+    const recent = new Date().toISOString();
+    central.tickets.push(
+      { id: crypto.randomUUID(), hubId: 'hub-1', kind: 'assistance', status: 'closed', outcome: 'done', createdAt: old, updatedAt: old },
+      { id: crypto.randomUUID(), hubId: 'hub-1', kind: 'assistance', status: 'closed', outcome: 'done', createdAt: old, updatedAt: recent },
+      { id: crypto.randomUUID(), hubId: 'hub-1', kind: 'assistance', status: 'in_progress', outcome: null, createdAt: old, updatedAt: old },
+    );
+    const res = await tickets.list();
+    expect(res.ok && res.value.map((t) => [t.status, t.archived])).toEqual([
+      ['new', false],
+      ['closed', true],
+      ['closed', false],
+      ['in_progress', false],
+    ]);
+  });
+
   it('refuse sans rien envoyer : message vide, trop long, hub non enrôlé ou révoqué', async () => {
     const tickets = service();
     expect(await tickets.create('assistance', '   ')).toMatchObject({ ok: false, error: 'empty' });

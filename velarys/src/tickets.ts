@@ -4,6 +4,7 @@ import Value from 'typebox/value';
 import {
   generateSealKeyPair,
   HUB_PATHS,
+  isTicketArchived,
   openSealedText,
   PINNED_REPLY_KEYS,
   PINNED_SEAL_KEYS,
@@ -78,6 +79,8 @@ export interface PanelTicket extends Omit<TicketSummary, 'messages'> {
   /** `null` = demande connue du central mais absente de ce hub (add-on réinstallé). */
   text: string | null;
   thread: PanelMessage[];
+  /** Close et sans mouvement depuis 90 jours (règle du contrat) : rangée dans les archives du panneau. */
+  archived: boolean;
 }
 
 export type TicketError =
@@ -265,7 +268,7 @@ export class TicketService {
     const store = await this.readLocal();
     await this.writeLocal({ ...store, tickets: [{ id: ticket.id, kind, text, createdAt: ticket.createdAt }, ...store.tickets] });
     log.info('Demande envoyée au central', { ticketId: ticket.id, kind });
-    return { ok: true, value: { ...ticket, text, thread: [] } };
+    return { ok: true, value: { ...ticket, text, thread: [], archived: false } };
   }
 
   /** Ajoute un message du client au fil d'une demande ouverte, scellé comme le premier. */
@@ -349,7 +352,7 @@ export class TicketService {
           thread.push(await this.openReply(m, t.id, id.value, replyKey));
         }
       }
-      tickets.push({ ...t, text: firstTexts.get(t.id) ?? null, thread });
+      tickets.push({ ...t, text: firstTexts.get(t.id) ?? null, thread, archived: isTicketArchived(t) });
     }
     return { ok: true, value: tickets };
   }

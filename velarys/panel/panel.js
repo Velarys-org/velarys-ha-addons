@@ -47,6 +47,9 @@ const T = {
     closedLabel: 'Terminées',
     showClosed: (n) => `Afficher les demandes terminées (${n})`,
     hideClosed: 'Masquer les demandes terminées',
+    archivedLabel: `Archivées, terminées depuis plus de 90${NB}jours`,
+    showArchived: (n) => `Afficher les archives (${n})`,
+    hideArchived: 'Masquer les archives',
     noText: 'Texte non conservé sur ce boîtier.',
     loading: 'Chargement…',
     listError: 'Vos demandes ne peuvent pas s’afficher pour l’instant.',
@@ -123,6 +126,9 @@ const T = {
     closedLabel: 'Closed',
     showClosed: (n) => `Show closed requests (${n})`,
     hideClosed: 'Hide closed requests',
+    archivedLabel: 'Archived, closed more than 90 days ago',
+    showArchived: (n) => `Show archived requests (${n})`,
+    hideArchived: 'Hide archived requests',
     noText: 'Text not kept on this device.',
     loading: 'Loading…',
     listError: 'Your requests cannot be shown right now.',
@@ -272,6 +278,8 @@ function readShowClosed() {
   }
 }
 let showClosed = readShowClosed();
+/** Les archives restent repliées à chaque visite. */
+let showArchived = false;
 
 /** Une ligne du carnet : carré d'état, type et date, extrait, état en mots. */
 function ticketItem(ticket) {
@@ -329,12 +337,14 @@ function ticketItem(ticket) {
   return li;
 }
 
-/** Ouvertes en haut du carnet ; terminées repliées dans son pied. */
+/** Ouvertes en haut du carnet ; terminées repliées dans son pied ; archivées (90 jours) à part. */
 function renderList() {
   const open = tickets.filter((x) => x.status !== 'closed');
-  const closed = tickets.filter((x) => x.status === 'closed');
+  const closed = tickets.filter((x) => x.status === 'closed' && !x.archived);
+  const archived = tickets.filter((x) => x.archived);
   $('tickets').replaceChildren(...open.map(ticketItem));
   $('tickets-closed').replaceChildren(...closed.map(ticketItem));
+  $('tickets-archived').replaceChildren(...archived.map(ticketItem));
 
   if (tickets.length === 0) setStatus($('list-status'), t.empty);
   else if (open.length === 0) setStatus($('list-status'), t.noOpen);
@@ -346,7 +356,19 @@ function renderList() {
   toggle.classList.toggle('open', showClosed);
   $('toggle-closed-label').textContent = showClosed ? t.hideClosed : t.showClosed(closed.length);
   $('closed-wrap').hidden = !showClosed || closed.length === 0;
+
+  const toggleArchived = $('toggle-archived');
+  toggleArchived.hidden = archived.length === 0;
+  toggleArchived.setAttribute('aria-expanded', String(showArchived));
+  toggleArchived.classList.toggle('open', showArchived);
+  $('toggle-archived-label').textContent = showArchived ? t.hideArchived : t.showArchived(archived.length);
+  $('archived-wrap').hidden = !showArchived || archived.length === 0;
 }
+
+$('toggle-archived').addEventListener('click', () => {
+  showArchived = !showArchived;
+  renderList();
+});
 
 $('toggle-closed').addEventListener('click', () => {
   showClosed = !showClosed;
@@ -368,7 +390,9 @@ async function refresh() {
   } catch (error) {
     $('tickets').replaceChildren();
     $('tickets-closed').replaceChildren();
+    $('tickets-archived').replaceChildren();
     $('toggle-closed').hidden = true;
+    $('toggle-archived').hidden = true;
     setStatus($('list-status'), ['not_enrolled', 'revoked'].includes(error.code) ? errorText(error.code) : t.listError, 'warn');
   }
 }

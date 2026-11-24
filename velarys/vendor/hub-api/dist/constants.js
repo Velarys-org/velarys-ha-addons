@@ -1,5 +1,5 @@
 /** Version du contrat, recopiée dans l'add-on avec le package vendorisé. */
-export const HUB_API_VERSION = '0.5.1';
+export const HUB_API_VERSION = '0.5.2';
 /** Routes publiques, les seules que le tunnel Cloudflare publie (préfixe `/v1/hub/`). */
 export const HUB_PATHS = {
     enroll: '/v1/hub/enroll',
@@ -41,6 +41,19 @@ export const TICKETS_PER_HUB_PER_DAY = 5;
 export const TICKET_MESSAGE_SCHEMA_V1 = 'velarys.ticket-message/1';
 /** Plafond anti-abus de messages ajoutés par hub sur 24 h glissantes (premières demandes non comprises). */
 export const TICKET_MESSAGES_PER_HUB_PER_DAY = 20;
+/**
+ * Archivage des demandes (décision du 2026-11-24) : une demande close et sans mouvement depuis ce
+ * délai sort des listes, dans l'admin comme dans le panneau, mais reste consultable dans les
+ * archives. Rien n'est effacé. Règle partagée : le hub ne connaît que `status` et `updatedAt`, et
+ * `updatedAt` ne bouge plus après la clôture sauf réponse ou réouverture (la note interne n'y touche pas).
+ */
+export const TICKET_ARCHIVE_AFTER_DAYS = 90;
+export function isTicketArchived(ticket, now = new Date()) {
+    if (ticket.status !== 'closed')
+        return false;
+    const updated = typeof ticket.updatedAt === 'string' ? Date.parse(ticket.updatedAt) : ticket.updatedAt.getTime();
+    return now.getTime() - updated >= TICKET_ARCHIVE_AFTER_DAYS * 86_400_000;
+}
 /**
  * Messages types de Velarys : le central n'envoie que le code, le hub affiche son propre texte.
  * Liste fermée, sans signature (même niveau de confiance que les statuts). Ajouter un code = le

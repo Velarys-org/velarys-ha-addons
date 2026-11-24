@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0-beta.12
+
+Canal bêta seulement.
+
+- Une demande terminée depuis plus de 90 jours, sans nouveau message, passe dans les archives : elle
+  sort du carnet mais reste consultable sous « Afficher les archives ». Rien n'est effacé.
+
 ## 0.3.0-beta.11
 
 Canal bêta seulement.

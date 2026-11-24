@@ -64,6 +64,15 @@
             <span id="toggle-closed-label"></span>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
           </button>
+          <!-- Archives : closes depuis 90 jours sans mouvement, toujours consultables, repliées à chaque visite. -->
+          <div class="log-closed" id="archived-wrap" hidden>
+            <p class="log-sub" data-t="archivedLabel"></p>
+            <ul class="log-list" id="tickets-archived"></ul>
+          </div>
+          <button type="button" class="log-toggle" id="toggle-archived" hidden aria-expanded="false" aria-controls="archived-wrap">
+            <span id="toggle-archived-label"></span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </button>
         </div>
       </section>
 
