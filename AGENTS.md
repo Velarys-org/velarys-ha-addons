@@ -48,8 +48,9 @@ ici : ce dépôt ne porte ni chemin local, ni infrastructure, ni donnée client.
   affichage. Une signature refusée = message masqué, jamais affiché « à tout hasard ». La réponse
   arrive scellée pour la clé X25519 du hub (`identity.json`, hors sauvegardes, envoyée signée).
 - **Panneau pour des personnes peu techniques** : deux grandes actions en haut (problème, et
-  intervention désactivée « Bientôt » en attendant l'usecase d'accès distant), la liste des
-  demandes dessous, puis l'avertissement « urgence » (encadré ambre léger), un filet, et « Suivre
+  intervention désactivée « Bientôt » en attendant l'usecase d'accès distant), l'avertissement
+  « urgence » juste dessous (encadré ambre léger, là où le client décide d'écrire), la liste des
+  demandes, puis un filet et « Suivre
   Velarys » sur fond neutre sans teinte (le vert a été refusé), motif ribbon de la marque en filigrane (même tuile que `--vproof-v` du
   site, dissoute à 45°) : lettre d'information et réseaux, liens sortants en
   nouvel onglet ; adresses recopiées de `src/data/social.ts` du site, à changer des deux côtés).

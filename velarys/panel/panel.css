@@ -758,3 +758,8 @@ textarea:focus {
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+/* L'avertissement suit directement les deux actions. */
+.actions-grid + .notice {
+  margin-top: 14px;
+}

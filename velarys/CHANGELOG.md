@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0-beta.9
+
+Canal bêta seulement.
+
+- L'avertissement « urgence » passe juste sous les deux actions, là où le client décide d'écrire.
+
 ## 0.3.0-beta.8
 
 Canal bêta seulement.
