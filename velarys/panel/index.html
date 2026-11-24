@@ -55,6 +55,13 @@
         <ul class="tickets" id="tickets"></ul>
       </section>
 
+      <p class="notice" role="note">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 1 21h22L12 2zm1 15h-2v-2h2v2zm0-4h-2V9h2v4z" /></svg>
+        <span><strong data-t="urgentTitle"></strong> <span data-t="urgentText"></span></span>
+      </p>
+
+      <hr class="sep" />
+
       <!-- Suivre Velarys : liens sortants seulement (nouvel onglet), rien n'est chargé depuis l'extérieur.
            Adresses alignées sur le site : src/data/social.ts et le CTA « lettre » du blog. -->
       <section class="follow" aria-labelledby="follow-title">
@@ -108,9 +115,12 @@
         </form>
         <p class="closed-note" id="closed-note" data-t="closedNote"></p>
         <p class="status" id="detail-status" role="status"></p>
+        <p class="notice" role="note">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 1 21h22L12 2zm1 15h-2v-2h2v2zm0-4h-2V9h2v4z" /></svg>
+        <span><strong data-t="urgentTitle"></strong> <span data-t="urgentText"></span></span>
+        </p>
       </section>
 
-      <p class="urgent-line"><strong data-t="urgentTitle"></strong> <span data-t="urgentText"></span></p>
     </main>
 
     <!-- Nouvelle demande -->

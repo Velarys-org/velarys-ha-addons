@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0-beta.7
+
+Canal bêta seulement.
+
+- Sous la liste des demandes : l'avertissement « urgence » en encadré, un filet, puis « Suivre
+  Velarys » sur un fond à part, avec le motif de la marque en filigrane.
+
 ## 0.3.0-beta.6
 
 Canal bêta seulement.

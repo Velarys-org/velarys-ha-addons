@@ -49,7 +49,9 @@ ici : ce dépôt ne porte ni chemin local, ni infrastructure, ni donnée client.
   arrive scellée pour la clé X25519 du hub (`identity.json`, hors sauvegardes, envoyée signée).
 - **Panneau pour des personnes peu techniques** : deux grandes actions en haut (problème, et
   intervention désactivée « Bientôt » en attendant l'usecase d'accès distant), la liste des
-  demandes dessous, puis « Suivre Velarys » (lettre d'information et réseaux, liens sortants en
+  demandes dessous, puis l'avertissement « urgence » (encadré ambre léger), un filet, et « Suivre
+  Velarys » sur fond à part, motif ribbon de la marque en filigrane (même tuile que `--vproof-v` du
+  site, dissoute à 45°) : lettre d'information et réseaux, liens sortants en
   nouvel onglet ; adresses recopiées de `src/data/social.ts` du site, à changer des deux côtés).
   « Proposer une idée » est **mis de côté** (2026-11-24, « ça ne presse pas ») : la carte est retirée,
   le type `evolution` reste au contrat et au central, les idées déjà envoyées restent lisibles. Création en fenêtre ; une demande s'ouvre en **vue** du panneau

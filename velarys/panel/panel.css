@@ -16,7 +16,12 @@
   --amber-bg: #fef3c7;
   --blue: #1d4ed8;
   --blue-bg: #dbeafe;
+  --pattern-opacity: 0.06;
+  --amber-soft: #fffaeb;
+  --amber-line: #f5dfa8;
   --radius: 3px 14px 22px 14px;
+  /* Motif « ribbon » de la marque : la même tuile que --vproof-v du site (src/styles/base.css). */
+  --vproof-v: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='76' height='164' viewBox='52.2 53.6 76 164'%3E%3Cdefs%3E%3Cpath id='v' fill='%23ffffff' d='m 87.27459,124.36108 c -4.429452,-0.62998 -6.522626,-2.36009 -9.886489,-8.17169 -0.835174,-1.4429 -1.801369,-3.10641 -2.1471,-3.69668 -0.34573,-0.59028 -0.751698,-1.28787 -0.90215,-1.55022 -0.150452,-0.26234 -1.132002,-1.95268 -2.181222,-3.7563 -1.04922,-1.80361 -2.308838,-3.9769 -2.799152,-4.82952 -0.490314,-0.85262 -1.453454,-2.516123 -2.140311,-3.696683 -1.742984,-2.99579 -2.465877,-4.24308 -3.732056,-6.43936 -0.604977,-1.04939 -1.384647,-2.39092 -1.732598,-2.98119 -0.561021,-0.95173 -7.58001,-13.08022 -9.178443,-15.85992 -0.339431,-0.59028 -1.027909,-1.78525 -1.529952,-2.6555 -0.502044,-0.87024 -0.912806,-1.61393 -0.912806,-1.65265 0,-0.0738 -1.393124,-2.42199 -1.869581,-3.15124 -0.152281,-0.23308 -0.276875,-0.46309 -0.276875,-0.51114 0,-0.22121 20.779287,-0.0244 21.464559,0.20335 2.658848,0.88349 3.721013,2.0267 7.02171,7.55747 2.124675,3.56018 3.704642,6.13737 10.509551,17.14286 1.459922,2.3611 2.736643,4.45389 2.837168,4.65065 1.004589,1.96637 4.018944,5.447063 6.044907,6.980073 2.736397,2.07059 7.20969,2.83221 10.76209,1.83233 0.43495,-0.12242 0.5856,-0.53071 -2.03438,5.51346 -0.23129,0.53357 -0.56526,1.28483 -0.74217,1.66946 -0.1769,0.38463 -0.52147,1.15546 -0.7657,1.71294 -3.418463,7.80295 -4.639847,9.46514 -7.945259,10.81274 -1.98293,0.80843 -5.548786,1.20601 -7.863741,0.87676 z m 24.71104,0.0361 c -0.68683,-0.0635 -0.77395,-0.21993 -0.46376,-0.83273 0.12771,-0.2523 0.96644,-2.17591 1.86386,-4.27467 0.89741,-2.09875 1.86571,-4.35253 2.15176,-5.00839 0.56159,-1.28758 2.2372,-5.17636 3.67382,-8.5262 2.19005,-5.10669 3.21173,-7.479403 3.36875,-7.823543 0.1659,-0.3636 0.70418,-1.62023 1.85502,-4.3306 0.73971,-1.74212 0.65342,-1.69185 1.56969,-0.91452 13.54577,11.491703 3.87552,33.365373 -14.01914,31.710653 z M 108.648,96.204577 c -12.820429,-11.88498 -2.81255,-33.68367 14.37439,-31.30958 0.86945,0.12011 0.93725,-0.19994 -0.81268,3.83618 -0.82408,1.90072 -1.67755,3.88514 -1.89658,4.40984 -0.21904,0.52468 -0.78383,1.83938 -1.25511,2.92156 -0.47127,1.08217 -1.06163,2.45053 -1.31192,3.04081 -0.90337,2.13045 -4.32958,10.09202 -6.61994,15.38294 -0.56783,1.31172 -1.06046,2.45202 -1.09475,2.53401 -0.11759,0.28117 -0.34442,0.14742 -1.38341,-0.81576 z'/%3E%3C/defs%3E%3Cuse href='%23v'/%3E%3Cuse href='%23v' transform='translate(76,0)'/%3E%3Cuse href='%23v' transform='translate(-76,0)'/%3E%3Cuse href='%23v' transform='translate(38,82)'/%3E%3Cuse href='%23v' transform='translate(-38,82)'/%3E%3Cuse href='%23v' transform='translate(114,82)'/%3E%3Cuse href='%23v' transform='translate(-114,82)'/%3E%3C/svg%3E");
   --radius-sm: 3px 10px 14px 10px;
   --shadow: 0 1px 2px rgb(33 31 28 / 6%), 0 8px 24px rgb(33 31 28 / 6%);
   color-scheme: light;
@@ -35,6 +40,9 @@
     --mint-soft: #123a2b;
     --amber: #fbbf24;
     --amber-bg: #3a2c0c;
+    --pattern-opacity: 0.035;
+    --amber-soft: #2a2110;
+    --amber-line: #4a3814;
     --blue: #93b4ff;
     --blue-bg: #1c2a4a;
     --shadow: none;
@@ -295,13 +303,63 @@ h2 {
   color: var(--ink-3);
 }
 
-/* --- Suivre Velarys --- */
+
+/* --- Après la liste : avertissement, filet, « Suivre Velarys » --- */
+.notice {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 24px 0 0;
+  padding: 12px 14px;
+  border: 1px solid var(--amber-line);
+  border-radius: var(--radius-sm);
+  background: var(--amber-soft);
+  color: var(--ink-2);
+  font-size: 0.9rem;
+}
+
+.notice svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  fill: var(--amber);
+}
+
+.notice strong {
+  color: var(--amber);
+}
+
+.sep {
+  margin: 28px 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+/* Bloc d'une autre nature que les cartes : pas de bordure, fond doux, filigrane du motif de marque,
+   dense en bas à gauche et qui se dissout vers le haut à droite (45°). */
 .follow {
-  margin-top: 32px;
-  padding: 18px;
-  background: var(--bg);
-  border: 1px solid var(--line);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 22px;
   border-radius: var(--radius);
+  background: var(--bg-soft);
+  background: color-mix(in srgb, var(--mint-soft) 55%, var(--bg));
+}
+
+.follow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--ink);
+  opacity: var(--pattern-opacity);
+  -webkit-mask: var(--vproof-v) 0 0 / 27px 58px repeat, linear-gradient(45deg, #000 0%, transparent 70%);
+  -webkit-mask-composite: source-in;
+  mask: var(--vproof-v) 0 0 / 27px 58px repeat, linear-gradient(45deg, #000 0%, transparent 70%);
+  mask-composite: intersect;
+  pointer-events: none;
 }
 
 .follow-letter {
@@ -319,6 +377,7 @@ h2 {
 }
 
 .follow-letter .btn {
+  background: var(--bg);
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -336,11 +395,10 @@ h2 {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  padding-top: 14px;
-  border-top: 1px solid var(--line);
 }
 
 .social {
+  background: var(--bg);
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -368,11 +426,6 @@ h2 {
   height: 20px;
 }
 
-.urgent-line {
-  margin: 28px 0 0;
-  font-size: 0.88rem;
-  color: var(--ink-3);
-}
 
 /* --- Fenêtres --- */
 dialog {
