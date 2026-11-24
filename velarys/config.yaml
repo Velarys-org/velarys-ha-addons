@@ -1,5 +1,5 @@
 name: Suivi et Maintenance (bêta)
-version: "0.3.0-beta.5"
+version: "0.3.0-beta.6"
 slug: velarys
 # Canal bêta : cette branche `beta` du dépôt, que seuls les hubs de test ajoutent
 # (`https://github.com/Velarys-org/velarys-ha-addons#beta`). Les clients suivent `main`.

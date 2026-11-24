@@ -21,6 +21,9 @@ const T = {
     ctaIntervention: 'Demander une intervention',
     ctaInterventionHint: 'Autoriser Velarys à intervenir sur votre installation.',
     soon: 'Bientôt',
+    followTitle: 'Suivre Velarys',
+    letterText: 'Nos chantiers et nos conseils, un e-mail par mois au plus.',
+    letterCta: 'Recevoir la lettre',
     newTitle: { assistance: 'Signaler un problème', evolution: 'Proposer une idée' },
     newLabel: {
       assistance: `Que se passe-t-il${NB}? Depuis quand, dans quelle pièce${NB}?`,
@@ -89,6 +92,9 @@ const T = {
     ctaIntervention: 'Request an intervention',
     ctaInterventionHint: 'Allow Velarys to work on your installation.',
     soon: 'Coming soon',
+    followTitle: 'Follow Velarys',
+    letterText: 'Our projects and tips, one email a month at most.',
+    letterCta: 'Get the newsletter',
     newTitle: { assistance: 'Report a problem', evolution: 'Suggest an idea' },
     newLabel: {
       assistance: 'What is happening? Since when, in which room?',

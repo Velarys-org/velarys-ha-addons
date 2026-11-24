@@ -321,7 +321,9 @@ describe('panneau (ingress)', () => {
     expect(res.status).toBe(200);
     expect(res.headers.get('content-security-policy')).toContain("default-src 'none'");
     const html = await res.text();
-    expect(html).not.toMatch(/https?:\/\//);
+    // Aucune ressource chargée hors de l'add-on (script, style, image) ; les liens sortants sont permis.
+    expect(html).not.toMatch(/<(script|link|img|iframe)[^>]+(src|href)="https?:\/\//);
+    expect(html).toContain('target="_blank" rel="noopener noreferrer"');
     expect((await fetch(`${panelUrl}/panel.js`)).headers.get('content-type')).toContain('javascript');
   });
 

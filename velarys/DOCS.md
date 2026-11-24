@@ -44,11 +44,13 @@ central refuse tout champ qui n'y figure pas.
 ## Demandes à Velarys
 
 L'add-on ajoute un panneau **Velarys** dans la barre latérale de Home Assistant, visible des
-administrateurs. On y trouve trois actions :
+administrateurs. On y trouve deux actions :
 
 - **Signaler un problème** : quelque chose ne marche plus comme d'habitude ;
-- **Proposer une idée** : un scénario, un appareil à ajouter, une pièce à équiper ;
 - **Demander une intervention** : bientôt disponible.
+
+Le panneau donne aussi les liens vers la lettre d'information de Velarys et ses réseaux sociaux ;
+ils s'ouvrent dans un nouvel onglet, et rien n'est chargé depuis ces sites tant qu'on ne clique pas.
 
 Votre message part avec le dernier battement de cœur de l'installation : Velarys sait déjà quelle
 version tourne et ce qui répond, sans vous le demander. Il est **chiffré sur la machine** pour le

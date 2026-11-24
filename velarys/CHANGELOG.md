@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0-beta.6
+
+Canal bêta seulement.
+
+- Accueil resserré : « Signaler un problème » et « Demander une intervention » (bientôt).
+- Liens vers la lettre d'information et les réseaux sociaux de Velarys, en nouvel onglet.
+
 ## 0.3.0-beta.5
 
 Canal bêta seulement.

@@ -47,9 +47,12 @@ ici : ce dépôt ne porte ni chemin local, ni infrastructure, ni donnée client.
   libre signé par passkey (WebAuthn), vérifié **sur le hub** contre `PINNED_REPLY_KEYS` avant tout
   affichage. Une signature refusée = message masqué, jamais affiché « à tout hasard ». La réponse
   arrive scellée pour la clé X25519 du hub (`identity.json`, hors sauvegardes, envoyée signée).
-- **Panneau pour des personnes peu techniques** : trois grandes actions en haut (problème, idée,
-  intervention, cette dernière désactivée « Bientôt » en attendant l'usecase d'accès distant), la
-  liste des demandes dessous. Création en fenêtre ; une demande s'ouvre en **vue** du panneau
+- **Panneau pour des personnes peu techniques** : deux grandes actions en haut (problème, et
+  intervention désactivée « Bientôt » en attendant l'usecase d'accès distant), la liste des
+  demandes dessous, puis « Suivre Velarys » (lettre d'information et réseaux, liens sortants en
+  nouvel onglet ; adresses recopiées de `src/data/social.ts` du site, à changer des deux côtés).
+  « Proposer une idée » est **mis de côté** (2026-11-24, « ça ne presse pas ») : la carte est retirée,
+  le type `evolution` reste au contrat et au central, les idées déjà envoyées restent lisibles. Création en fenêtre ; une demande s'ouvre en **vue** du panneau
   (`#/demande/<id>`, retour du navigateur compris), jamais en fenêtre (demande d'Arnaud). Dates
   relatives (« il y a 5 min »), date exacte au survol. Textes courts, aucun jargon.
 - **`velarys/apparmor.txt` confine l'agent** (note de sécurité 8/8) : lecture de `/app`, écriture dans

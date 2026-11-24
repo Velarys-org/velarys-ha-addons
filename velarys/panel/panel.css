@@ -101,7 +101,7 @@ h2 {
 /* --- Les trois actions --- */
 .actions-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
 }
 
@@ -293,6 +293,79 @@ h2 {
 .pill-closed {
   background: var(--bg-soft);
   color: var(--ink-3);
+}
+
+/* --- Suivre Velarys --- */
+.follow {
+  margin-top: 32px;
+  padding: 18px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.follow-letter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin: 10px 0 14px;
+}
+
+.follow-letter p {
+  margin: 0;
+  color: var(--ink-2);
+}
+
+.follow-letter .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.follow-letter .btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.social {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.92rem;
+}
+
+.social:hover {
+  border-color: var(--ink-3);
+}
+
+.social:focus-visible,
+.follow-letter .btn:focus-visible {
+  outline: 2px solid var(--mint);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.social svg {
+  width: 20px;
+  height: 20px;
 }
 
 .urgent-line {
