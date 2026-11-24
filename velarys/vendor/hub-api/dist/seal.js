@@ -17,9 +17,9 @@ const SEAL_INFO = new TextEncoder().encode('velarys.ticket/1');
 const suite = new CipherSuite({ kem: new DhkemX25519HkdfSha256(), kdf: new HkdfSha256(), aead: new Aes128Gcm() });
 /** Clés publiques de scellement épinglées, par URL de central. Une rotation = une version de l'add-on. */
 export const PINNED_SEAL_KEYS = {
-    // Vide tant que la paire de production n'est pas générée sur le NAS (`yarn seal-key`) : l'add-on
-    // refuse alors d'envoyer une demande au central de production plutôt que de lire une clé non épinglée.
-    'https://hub.velarys.fr': [],
+    // Paire de production générée le 2026-11-24 ; la clé privée ne vit que sur le central.
+    // Vide, l'add-on refuserait d'envoyer une demande plutôt que de lire une clé non épinglée.
+    'https://hub.velarys.fr': [{ kid: '8LP6Wmp1rrVUvVwJ', publicKey: 'qh8hzuHbpEQLkkqz2sVebqnI83oVLNXnEmrBdMnFFi8' }],
 };
 const b64u = (bytes) => Buffer.from(bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes)).toString('base64url');
 const fromB64u = (text) => new Uint8Array(Buffer.from(text, 'base64url'));

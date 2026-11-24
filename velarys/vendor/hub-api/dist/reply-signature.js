@@ -1,7 +1,10 @@
 import { createHash, createPublicKey, verify } from 'node:crypto';
 /** Passkeys de signature épinglées, par URL de central. Vides tant qu'aucune n'est enregistrée. */
 export const PINNED_REPLY_KEYS = {
-    'https://hub.velarys.fr': [],
+    'https://hub.velarys.fr': [
+        // Passkey de signature de production, créée le 2026-11-24.
+        { credentialId: '-NevH_OIRmOG6jvTs6D8IA', alg: -7, publicKey: 'MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEhR1lXawlyt4seIDgFSBEsqlQdDLUWYWAfr9mS3VMJ-SIlplWjOmxe73b5WXbQEIuEs6gTV_3zsLhXxNlbB0XNQ', rpIdHash: 'SI_q2xU1aAqIvAfuFCXIe4z9KkunE4f0oqpsmlTN0RE', originHash: 'SBVEukZUORKU0xhsVZcY3qftzgZmpgcboM1LY3roUmA' },
+    ],
 };
 const sha256 = (data) => createHash('sha256').update(data).digest();
 const b64u = (data) => Buffer.from(data).toString('base64url');

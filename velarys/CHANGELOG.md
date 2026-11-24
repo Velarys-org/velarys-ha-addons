@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0-beta.11
+
+Canal bêta seulement.
+
+- Les demandes fonctionnent avec le central Velarys de production : le texte est chiffré pour sa clé,
+  embarquée dans l'application, et une réponse écrite par Velarys ne s'affiche que si elle porte la
+  signature de la passkey de Velarys, elle aussi embarquée.
+
 ## 0.3.0-beta.10
 
 Canal bêta seulement.
