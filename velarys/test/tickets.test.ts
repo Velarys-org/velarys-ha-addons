@@ -10,6 +10,7 @@ import {
   generateSealKeyPair,
   HUB_PATHS,
   openSealedText,
+  PINNED_REPLY_KEYS,
   PINNED_SEAL_KEYS,
   publicKeyFromJwk,
   TICKET_MESSAGE_MAX_CHARS,
@@ -28,7 +29,7 @@ import type { KeyObject } from 'node:crypto';
 import type { HubIdentity } from '../src/identity.js';
 import { setLogLevel } from '../src/log.js';
 import { createPanelServer, PANEL_CSRF_HEADER } from '../src/panel.js';
-import { resolveSealKey, TicketService } from '../src/tickets.js';
+import { resolveReplyKeys, resolveSealKey, TicketService } from '../src/tickets.js';
 
 setLogLevel('error');
 
@@ -215,6 +216,18 @@ describe('demandes depuis le hub', () => {
     const pinned = PINNED_SEAL_KEYS['https://hub.velarys.fr']!;
     if (pinned.length === 0) expect(res).toMatchObject({ ok: false, error: 'tickets_disabled' });
     else expect(res).toEqual({ ok: true, value: pinned[0] });
+  });
+
+  it('central de production : n’accepte que les passkeys épinglées, jamais celles du réseau', async () => {
+    // Un central compromis servirait sa propre passkey pour écrire à toute la flotte.
+    let fetched = false;
+    const fetchImpl = (async () => {
+      fetched = true;
+      return new Response(JSON.stringify({ keys: [new FakeAuthenticator().replyKey] }));
+    }) as typeof fetch;
+    const keys = await resolveReplyKeys('https://hub.velarys.fr', fetchImpl);
+    expect(fetched).toBe(false);
+    expect(keys).toEqual(PINNED_REPLY_KEYS['https://hub.velarys.fr']);
   });
 
   it('refuse une clé servie dont l’identifiant ne correspond pas', async () => {
