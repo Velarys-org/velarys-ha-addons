@@ -222,6 +222,33 @@ export declare const TicketCreateRequest: Type.TObject<{
     }>;
 }>;
 export type TicketCreateRequest = Type.Static<typeof TicketCreateRequest>;
+/**
+ * Message du fil d'une demande, tel que le hub le reçoit (contrat 0.5.0) :
+ * - du client : l'identifiant seul, le hub a gardé le texte ;
+ * - de Velarys, message type : un code de liste fermée, le hub affiche son propre texte ;
+ * - de Velarys, texte libre : scellé pour la clé de réponse de ce hub, et signé par passkey à
+ *   l'intérieur (`SignedReply`). Le hub ne l'affiche que si la signature est valide.
+ */
+export declare const TicketMessage: Type.TUnion<[Type.TObject<{
+    id: Type.TString;
+    author: Type.TLiteral<"client">;
+    createdAt: Type.TString;
+}>, Type.TObject<{
+    id: Type.TString;
+    author: Type.TLiteral<"velarys">;
+    createdAt: Type.TString;
+    template: Type.TUnsafe<"checking" | "fixed" | "need_details" | "not_possible" | "quote_coming" | "received" | "visit_needed" | "will_call">;
+}>, Type.TObject<{
+    id: Type.TString;
+    author: Type.TLiteral<"velarys">;
+    createdAt: Type.TString;
+    sealed: Type.TObject<{
+        kid: Type.TString;
+        enc: Type.TString;
+        ct: Type.TString;
+    }>;
+}>]>;
+export type TicketMessage = Type.Static<typeof TicketMessage>;
 /** Ce que le hub sait d'une demande : jamais le texte (il le garde de son côté), jamais de note. */
 export declare const TicketSummary: Type.TObject<{
     id: Type.TString;
@@ -230,6 +257,26 @@ export declare const TicketSummary: Type.TObject<{
     outcome: Type.TUnion<[Type.TLiteral<"done">, Type.TLiteral<"declined">, Type.TNull]>;
     createdAt: Type.TString;
     updatedAt: Type.TString;
+    /** Fil (contrat 0.5.0), renvoyé seulement au hub qui a donné sa clé de réponse. */
+    messages: Type.TOptional<Type.TArray<Type.TUnion<[Type.TObject<{
+        id: Type.TString;
+        author: Type.TLiteral<"client">;
+        createdAt: Type.TString;
+    }>, Type.TObject<{
+        id: Type.TString;
+        author: Type.TLiteral<"velarys">;
+        createdAt: Type.TString;
+        template: Type.TUnsafe<"checking" | "fixed" | "need_details" | "not_possible" | "quote_coming" | "received" | "visit_needed" | "will_call">;
+    }>, Type.TObject<{
+        id: Type.TString;
+        author: Type.TLiteral<"velarys">;
+        createdAt: Type.TString;
+        sealed: Type.TObject<{
+            kid: Type.TString;
+            enc: Type.TString;
+            ct: Type.TString;
+        }>;
+    }>]>>>;
 }>;
 export type TicketSummary = Type.Static<typeof TicketSummary>;
 export declare const TicketCreateResponse: Type.TObject<{
@@ -240,11 +287,40 @@ export declare const TicketCreateResponse: Type.TObject<{
         outcome: Type.TUnion<[Type.TLiteral<"done">, Type.TLiteral<"declined">, Type.TNull]>;
         createdAt: Type.TString;
         updatedAt: Type.TString;
+        /** Fil (contrat 0.5.0), renvoyé seulement au hub qui a donné sa clé de réponse. */
+        messages: Type.TOptional<Type.TArray<Type.TUnion<[Type.TObject<{
+            id: Type.TString;
+            author: Type.TLiteral<"client">;
+            createdAt: Type.TString;
+        }>, Type.TObject<{
+            id: Type.TString;
+            author: Type.TLiteral<"velarys">;
+            createdAt: Type.TString;
+            template: Type.TUnsafe<"checking" | "fixed" | "need_details" | "not_possible" | "quote_coming" | "received" | "visit_needed" | "will_call">;
+        }>, Type.TObject<{
+            id: Type.TString;
+            author: Type.TLiteral<"velarys">;
+            createdAt: Type.TString;
+            sealed: Type.TObject<{
+                kid: Type.TString;
+                enc: Type.TString;
+                ct: Type.TString;
+            }>;
+        }>]>>>;
     }>;
 }>;
 export type TicketCreateResponse = Type.Static<typeof TicketCreateResponse>;
-/** Corps de la liste : vide, la requête est signée par le hub qui demande les siennes. */
-export declare const TicketListRequest: Type.TObject<{}>;
+/**
+ * Corps de la liste, signé par le hub qui demande les siennes. `replyKey` (contrat 0.5.0) : clé
+ * publique X25519 du hub, pour que le central lui scelle les réponses libres ; sa présence demande
+ * aussi le fil des messages. La signature du hub empêche le tunnel de la remplacer.
+ */
+export declare const TicketListRequest: Type.TObject<{
+    replyKey: Type.TOptional<Type.TObject<{
+        kid: Type.TString;
+        publicKey: Type.TString;
+    }>>;
+}>;
 export type TicketListRequest = Type.Static<typeof TicketListRequest>;
 export declare const TicketListResponse: Type.TObject<{
     tickets: Type.TArray<Type.TObject<{
@@ -254,9 +330,59 @@ export declare const TicketListResponse: Type.TObject<{
         outcome: Type.TUnion<[Type.TLiteral<"done">, Type.TLiteral<"declined">, Type.TNull]>;
         createdAt: Type.TString;
         updatedAt: Type.TString;
+        /** Fil (contrat 0.5.0), renvoyé seulement au hub qui a donné sa clé de réponse. */
+        messages: Type.TOptional<Type.TArray<Type.TUnion<[Type.TObject<{
+            id: Type.TString;
+            author: Type.TLiteral<"client">;
+            createdAt: Type.TString;
+        }>, Type.TObject<{
+            id: Type.TString;
+            author: Type.TLiteral<"velarys">;
+            createdAt: Type.TString;
+            template: Type.TUnsafe<"checking" | "fixed" | "need_details" | "not_possible" | "quote_coming" | "received" | "visit_needed" | "will_call">;
+        }>, Type.TObject<{
+            id: Type.TString;
+            author: Type.TLiteral<"velarys">;
+            createdAt: Type.TString;
+            sealed: Type.TObject<{
+                kid: Type.TString;
+                enc: Type.TString;
+                ct: Type.TString;
+            }>;
+        }>]>>>;
     }>>;
 }>;
 export type TicketListResponse = Type.Static<typeof TicketListResponse>;
+export declare const TicketMessageCreateRequest: Type.TObject<{
+    schema: Type.TLiteral<"velarys.ticket-message/1">;
+    ticketId: Type.TString;
+    sealed: Type.TObject<{
+        kid: Type.TString;
+        enc: Type.TString;
+        /** 2 000 caractères de 4 octets au pire, plus l'étiquette GCM, en base64url. */
+        ct: Type.TString;
+    }>;
+}>;
+export type TicketMessageCreateRequest = Type.Static<typeof TicketMessageCreateRequest>;
+export declare const TicketMessageCreateResponse: Type.TObject<{
+    message: Type.TObject<{
+        id: Type.TString;
+        author: Type.TLiteral<"client">;
+        createdAt: Type.TString;
+    }>;
+}>;
+export type TicketMessageCreateResponse = Type.Static<typeof TicketMessageCreateResponse>;
+/** Passkeys de signature des réponses, lues seulement hors production (épinglées sinon). */
+export declare const ReplyKeysResponse: Type.TObject<{
+    keys: Type.TArray<Type.TObject<{
+        credentialId: Type.TString;
+        alg: Type.TUnion<[Type.TLiteral<-7>, Type.TLiteral<-8>]>;
+        publicKey: Type.TString;
+        rpIdHash: Type.TString;
+        originHash: Type.TString;
+    }>>;
+}>;
+export type ReplyKeysResponse = Type.Static<typeof ReplyKeysResponse>;
 /** Clé publique de scellement du central. Lue seulement hors production : en production, elle est épinglée. */
 export declare const SealKeyResponse: Type.TObject<{
     alg: Type.TLiteral<"hpke-x25519-hkdfsha256-aes128gcm">;
@@ -265,10 +391,10 @@ export declare const SealKeyResponse: Type.TObject<{
 }>;
 export type SealKeyResponse = Type.Static<typeof SealKeyResponse>;
 /** Erreurs typées : l'add-on agit selon `error`, jamais selon le message. */
-export declare const HubErrorCode: Type.TUnion<[Type.TLiteral<"invalid_request">, Type.TLiteral<"invalid_signature">, Type.TLiteral<"unknown_hub">, Type.TLiteral<"revoked">, Type.TLiteral<"replayed">, Type.TLiteral<"code_invalid">, Type.TLiteral<"code_used">, Type.TLiteral<"code_expired">, Type.TLiteral<"key_already_enrolled">, Type.TLiteral<"unsupported_schema">, Type.TLiteral<"tickets_disabled">, Type.TLiteral<"unknown_seal_key">, Type.TLiteral<"undecryptable">, Type.TLiteral<"message_too_long">, Type.TLiteral<"rate_limited">]>;
+export declare const HubErrorCode: Type.TUnion<[Type.TLiteral<"invalid_request">, Type.TLiteral<"invalid_signature">, Type.TLiteral<"unknown_hub">, Type.TLiteral<"revoked">, Type.TLiteral<"replayed">, Type.TLiteral<"code_invalid">, Type.TLiteral<"code_used">, Type.TLiteral<"code_expired">, Type.TLiteral<"key_already_enrolled">, Type.TLiteral<"unsupported_schema">, Type.TLiteral<"tickets_disabled">, Type.TLiteral<"unknown_seal_key">, Type.TLiteral<"undecryptable">, Type.TLiteral<"message_too_long">, Type.TLiteral<"rate_limited">, Type.TLiteral<"unknown_ticket">, Type.TLiteral<"ticket_closed">]>;
 export type HubErrorCode = Type.Static<typeof HubErrorCode>;
 export declare const HubError: Type.TObject<{
-    error: Type.TUnion<[Type.TLiteral<"invalid_request">, Type.TLiteral<"invalid_signature">, Type.TLiteral<"unknown_hub">, Type.TLiteral<"revoked">, Type.TLiteral<"replayed">, Type.TLiteral<"code_invalid">, Type.TLiteral<"code_used">, Type.TLiteral<"code_expired">, Type.TLiteral<"key_already_enrolled">, Type.TLiteral<"unsupported_schema">, Type.TLiteral<"tickets_disabled">, Type.TLiteral<"unknown_seal_key">, Type.TLiteral<"undecryptable">, Type.TLiteral<"message_too_long">, Type.TLiteral<"rate_limited">]>;
+    error: Type.TUnion<[Type.TLiteral<"invalid_request">, Type.TLiteral<"invalid_signature">, Type.TLiteral<"unknown_hub">, Type.TLiteral<"revoked">, Type.TLiteral<"replayed">, Type.TLiteral<"code_invalid">, Type.TLiteral<"code_used">, Type.TLiteral<"code_expired">, Type.TLiteral<"key_already_enrolled">, Type.TLiteral<"unsupported_schema">, Type.TLiteral<"tickets_disabled">, Type.TLiteral<"unknown_seal_key">, Type.TLiteral<"undecryptable">, Type.TLiteral<"message_too_long">, Type.TLiteral<"rate_limited">, Type.TLiteral<"unknown_ticket">, Type.TLiteral<"ticket_closed">]>;
     message: Type.TString;
 }>;
 export type HubError = Type.Static<typeof HubError>;

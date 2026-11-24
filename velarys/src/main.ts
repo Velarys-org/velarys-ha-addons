@@ -33,7 +33,11 @@ const health = new HealthCache(() =>
 log.info('Agent Velarys démarré', { version: pkg.version, contract: HUB_API_VERSION, central: options.central_url });
 
 // Panneau des demandes (ingress). Une panne du panneau n'arrête jamais le battement.
-const tickets = new TicketService({ centralUrl: options.central_url, loadIdentity: () => loadIdentity() });
+const tickets = new TicketService({
+  centralUrl: options.central_url,
+  loadIdentity: () => loadIdentity(),
+  saveIdentity: (identity) => saveIdentity(identity),
+});
 const allowedPeers = process.env['PANEL_ALLOWED_PEERS']?.split(',').map((p) => p.trim()).filter(Boolean);
 // Le Supervisor installe le panneau masqué : on l'affiche une fois, au premier démarrage. Si le
 // client le masque ensuite, le témoin l'empêche de réapparaître.

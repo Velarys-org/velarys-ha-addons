@@ -44,18 +44,22 @@ central refuse tout champ qui n'y figure pas.
 ## Demandes à Velarys
 
 L'add-on ajoute un panneau **Velarys** dans la barre latérale de Home Assistant, visible des
-administrateurs. Deux types de demande s'y écrivent :
+administrateurs. On y trouve trois actions :
 
-- **Demande d'assistance** : quelque chose ne marche plus comme d'habitude ;
-- **Idée d'évolution** : un scénario, un appareil à ajouter, une pièce à équiper.
+- **Signaler un problème** : quelque chose ne marche plus comme d'habitude ;
+- **Proposer une idée** : un scénario, un appareil à ajouter, une pièce à équiper ;
+- **Demander une intervention** : bientôt disponible.
 
 Votre message part avec le dernier battement de cœur de l'installation : Velarys sait déjà quelle
-version tourne et ce qui répond, sans vous le demander. Le message est **chiffré sur la machine**
-pour le seul central Velarys, avant même de quitter le logement : les intermédiaires du réseau ne
-voient qu'une enveloppe illisible. N'y écrivez ni code d'alarme, ni mot de passe, ni adresse.
+version tourne et ce qui répond, sans vous le demander. Il est **chiffré sur la machine** pour le
+seul central Velarys, avant même de quitter le logement : les intermédiaires du réseau ne voient
+qu'une enveloppe illisible. N'y écrivez ni code d'alarme, ni mot de passe, ni adresse.
 
-Le panneau affiche ensuite le suivi de chaque demande (reçue, en cours, close). Velarys vous répond
-par les moyens habituels, téléphone ou e-mail, jamais par le panneau.
+Chaque demande s'ouvre ensuite comme une conversation : vous y lisez les réponses de Velarys et
+pouvez ajouter des précisions tant qu'elle n'est pas terminée. Une réponse écrite par Velarys n'est
+affichée que si elle porte la **signature de Velarys**, vérifiée par la machine elle-même : personne
+d'autre, pas même quelqu'un qui prendrait la main sur les serveurs de Velarys, ne peut écrire dans
+votre panneau.
 
 **Ce panneau n'est pas un canal d'urgence** et n'est pas surveillé en permanence. Fuite d'eau,
 intrusion, panne de chauffage en hiver : appelez directement votre artisan ou les secours.

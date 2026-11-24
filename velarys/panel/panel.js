@@ -1,5 +1,6 @@
 // Panneau Velarys (ingress de l'add-on). Aucune dépendance, aucune ressource externe : tout est servi
 // par l'add-on, par chemins relatifs (le Supervisor le publie sous /api/hassio_ingress/<jeton>/).
+// Écrit pour des personnes peu techniques : trois grandes actions, une liste, des fenêtres simples.
 'use strict';
 
 const MAX_CHARS = 2000;
@@ -8,79 +9,125 @@ const NB = ' ';
 const T = {
   fr: {
     subtitle: 'Suivi et maintenance',
-    intro: `Un souci avec votre installation, ou une idée pour l’améliorer${NB}? Écrivez-nous ici. Votre message part avec l’état technique de votre installation${NB}: vous n’avez rien d’autre à chercher.`,
-    kindLegend: 'Type de demande',
-    kindAssistance: 'Demande d’assistance',
-    kindAssistanceHint: 'Quelque chose ne marche plus comme d’habitude.',
-    kindEvolution: 'Idée d’évolution',
-    kindEvolutionHint: 'Un scénario, un appareil à ajouter, une pièce à équiper.',
-    messageLabel: 'Votre message',
-    placeholderAssistance: 'Ce qui se passe, depuis quand, dans quelle pièce…',
-    placeholderEvolution: 'Ce que vous aimeriez que votre logement fasse…',
+    title: `Besoin de Velarys${NB}?`,
+    actionsTitle: 'Que souhaitez-vous faire',
+    ctaAssistance: 'Signaler un problème',
+    ctaAssistanceHint: 'Quelque chose ne marche plus comme d’habitude.',
+    ctaEvolution: 'Proposer une idée',
+    ctaEvolutionHint: 'Un scénario, un appareil à ajouter, une pièce à équiper.',
+    ctaIntervention: 'Demander une intervention',
+    ctaInterventionHint: 'Autoriser Velarys à intervenir sur votre installation.',
+    soon: 'Bientôt',
+    newTitle: { assistance: 'Signaler un problème', evolution: 'Proposer une idée' },
+    newLabel: {
+      assistance: `Que se passe-t-il${NB}? Depuis quand, dans quelle pièce${NB}?`,
+      evolution: `Qu’aimeriez-vous que votre logement fasse de plus${NB}?`,
+    },
     privacyHint: 'N’écrivez ni code d’alarme, ni mot de passe, ni adresse.',
-    urgentTitle: 'Pas pour les urgences.',
+    urgentTitle: 'Une urgence ?',
     urgentText: `Fuite d’eau, intrusion, panne de chauffage en hiver${NB}: appelez directement votre artisan ou les secours (17, 18 ou 112). Ce panneau n’est pas surveillé en permanence.`,
+    cancel: 'Annuler',
     send: 'Envoyer',
     sending: 'Envoi…',
-    sent: 'Demande envoyée. Velarys revient vers vous par les moyens habituels.',
+    sent: 'Merci, votre demande est partie. Velarys vous répond ici, ou par téléphone.',
     encryption: 'Votre message est chiffré sur ce boîtier, et seul Velarys peut le lire.',
     listTitle: 'Vos demandes',
-    empty: 'Aucune demande envoyée depuis ce boîtier.',
+    empty: 'Vous n’avez encore envoyé aucune demande.',
     noText: 'Texte non conservé sur ce boîtier.',
     loading: 'Chargement…',
-    listError: 'Le suivi des demandes est indisponible pour l’instant.',
+    listError: 'Vos demandes ne peuvent pas s’afficher pour l’instant.',
     counter: (n) => `${n.toLocaleString('fr-FR')} / 2${NB}000`,
-    status: { new: 'Reçue', in_progress: 'En cours', closed: 'Close' },
-    outcome: { done: { assistance: 'réglée', evolution: 'réalisée' }, declined: 'écartée' },
-    kind: { assistance: 'Assistance', evolution: 'Évolution' },
+    kind: { assistance: 'Problème signalé', evolution: 'Idée proposée' },
+    status: { new: 'Reçue', in_progress: 'En cours', closed: 'Terminée' },
+    outcome: { done: { assistance: 'Réglée', evolution: 'Réalisée' }, declined: 'Non retenue' },
+    newReply: 'Nouvelle réponse',
+    you: 'Vous',
+    velarys: 'Velarys',
+    unverified: 'Un message n’a pas pu être vérifié : il n’est pas affiché.',
+    replyLabel: 'Ajouter un message',
+    closedNote: 'Cette demande est terminée. Pour autre chose, faites une nouvelle demande.',
+    templates: {
+      received: 'Bien reçu. Nous revenons vers vous.',
+      need_details: `Pouvez-vous nous en dire un peu plus${NB}: quel appareil, dans quelle pièce, depuis quand${NB}?`,
+      checking: 'Nous regardons l’état technique de votre installation.',
+      will_call: 'Nous allons vous appeler pour en parler.',
+      visit_needed: 'Il faut passer chez vous. Nous vous contactons pour fixer un rendez-vous.',
+      fixed: 'C’est réglé. Dites-nous si le problème revient.',
+      quote_coming: 'Merci pour l’idée. Nous vous préparons une proposition.',
+      not_possible: 'Ce n’est pas possible pour le moment. Nous vous expliquons pourquoi de vive voix.',
+    },
     errors: {
       not_enrolled: 'Ce boîtier n’est pas encore relié à Velarys. Le panneau fonctionnera une fois l’installation terminée.',
       revoked: 'Le suivi Velarys de ce boîtier est arrêté.',
       empty: 'Le message est vide.',
       message_too_long: `Le message dépasse 2${NB}000 caractères.`,
-      tickets_disabled: 'Les demandes ne sont pas encore ouvertes. Contactez Velarys par les moyens habituels.',
-      rate_limited: 'Plusieurs demandes sont déjà parties aujourd’hui depuis ce boîtier. Réessayez demain, ou contactez Velarys directement.',
+      tickets_disabled: 'Les demandes ne sont pas encore ouvertes. Contactez Velarys par téléphone ou par e-mail.',
+      rate_limited: 'Plusieurs messages sont déjà partis aujourd’hui depuis ce boîtier. Réessayez demain, ou appelez Velarys.',
+      ticket_closed: 'Cette demande est terminée. Faites une nouvelle demande.',
       unreachable: `Velarys est injoignable pour l’instant. Votre message n’est pas parti${NB}: réessayez dans quelques minutes.`,
-      default: 'La demande n’a pas pu être envoyée. Réessayez plus tard, ou contactez Velarys directement.',
+      default: 'Le message n’a pas pu partir. Réessayez plus tard, ou appelez Velarys.',
     },
     date: 'fr-FR',
   },
   en: {
     subtitle: 'Monitoring and maintenance',
-    intro: 'Something wrong with your installation, or an idea to improve it? Write to us here. Your message is sent with the technical state of your installation, so there is nothing else to look up.',
-    kindLegend: 'Type of request',
-    kindAssistance: 'Support request',
-    kindAssistanceHint: 'Something no longer works as usual.',
-    kindEvolution: 'Improvement idea',
-    kindEvolutionHint: 'A scene, a device to add, a room to equip.',
-    messageLabel: 'Your message',
-    placeholderAssistance: 'What is happening, since when, in which room…',
-    placeholderEvolution: 'What you would like your home to do…',
+    title: 'Need Velarys?',
+    actionsTitle: 'What would you like to do',
+    ctaAssistance: 'Report a problem',
+    ctaAssistanceHint: 'Something no longer works as usual.',
+    ctaEvolution: 'Suggest an idea',
+    ctaEvolutionHint: 'A scene, a device to add, a room to equip.',
+    ctaIntervention: 'Request an intervention',
+    ctaInterventionHint: 'Allow Velarys to work on your installation.',
+    soon: 'Coming soon',
+    newTitle: { assistance: 'Report a problem', evolution: 'Suggest an idea' },
+    newLabel: {
+      assistance: 'What is happening? Since when, in which room?',
+      evolution: 'What else would you like your home to do?',
+    },
     privacyHint: 'Do not write any alarm code, password or address.',
-    urgentTitle: 'Not for emergencies.',
+    urgentTitle: 'An emergency?',
     urgentText: 'Water leak, break-in, heating failure in winter: call your tradesperson or the emergency services (112) directly. This panel is not monitored around the clock.',
+    cancel: 'Cancel',
     send: 'Send',
     sending: 'Sending…',
-    sent: 'Request sent. Velarys will get back to you through the usual channels.',
+    sent: 'Thank you, your request has been sent. Velarys will reply here, or by phone.',
     encryption: 'Your message is encrypted on this device, and only Velarys can read it.',
     listTitle: 'Your requests',
-    empty: 'No request sent from this device yet.',
+    empty: 'You have not sent any request yet.',
     noText: 'Text not kept on this device.',
     loading: 'Loading…',
-    listError: 'Request status is unavailable at the moment.',
+    listError: 'Your requests cannot be shown right now.',
     counter: (n) => `${n.toLocaleString('en-GB')} / 2,000`,
-    status: { new: 'Received', in_progress: 'In progress', closed: 'Closed' },
-    outcome: { done: { assistance: 'resolved', evolution: 'done' }, declined: 'declined' },
-    kind: { assistance: 'Support', evolution: 'Idea' },
+    kind: { assistance: 'Problem reported', evolution: 'Idea suggested' },
+    status: { new: 'Received', in_progress: 'In progress', closed: 'Done' },
+    outcome: { done: { assistance: 'Resolved', evolution: 'Done' }, declined: 'Not taken forward' },
+    newReply: 'New reply',
+    you: 'You',
+    velarys: 'Velarys',
+    unverified: 'A message could not be verified and is not shown.',
+    replyLabel: 'Add a message',
+    closedNote: 'This request is closed. For anything else, please send a new request.',
+    templates: {
+      received: 'Received. We will get back to you.',
+      need_details: 'Could you tell us a bit more: which device, which room, since when?',
+      checking: 'We are looking at the technical state of your installation.',
+      will_call: 'We will call you to talk it through.',
+      visit_needed: 'A visit is needed. We will contact you to set a date.',
+      fixed: 'It is fixed. Let us know if the problem comes back.',
+      quote_coming: 'Thank you for the idea. We are preparing a proposal.',
+      not_possible: 'This is not possible for now. We will explain why in person.',
+    },
     errors: {
       not_enrolled: 'This device is not linked to Velarys yet. The panel will work once the installation is complete.',
       revoked: 'Velarys monitoring has been stopped on this device.',
       empty: 'The message is empty.',
       message_too_long: 'The message is longer than 2,000 characters.',
-      tickets_disabled: 'Requests are not open yet. Please contact Velarys through the usual channels.',
-      rate_limited: 'Several requests have already been sent from this device today. Try again tomorrow, or contact Velarys directly.',
+      tickets_disabled: 'Requests are not open yet. Please contact Velarys by phone or email.',
+      rate_limited: 'Several messages have already been sent from this device today. Try again tomorrow, or call Velarys.',
+      ticket_closed: 'This request is closed. Please send a new request.',
       unreachable: 'Velarys cannot be reached right now. Your message was not sent: try again in a few minutes.',
-      default: 'The request could not be sent. Try again later, or contact Velarys directly.',
+      default: 'The message could not be sent. Try again later, or call Velarys.',
     },
     date: 'en-GB',
   },
@@ -89,44 +136,27 @@ const T = {
 const lang = (navigator.language || 'fr').toLowerCase().startsWith('fr') ? 'fr' : 'en';
 const t = T[lang];
 document.documentElement.lang = lang;
-
 for (const el of document.querySelectorAll('[data-t]')) {
   const value = t[el.dataset.t];
   if (typeof value === 'string') el.textContent = value;
 }
 
-const form = document.getElementById('form');
-const message = document.getElementById('message');
-const counter = document.getElementById('counter');
-const sendBtn = document.getElementById('send');
-const status = document.getElementById('status');
-const list = document.getElementById('tickets');
-const listStatus = document.getElementById('list-status');
-
+const $ = (id) => document.getElementById(id);
 const chars = (text) => [...text].length;
-const kind = () => form.querySelector('input[name="kind"]:checked').value;
+const fmtDate = new Intl.DateTimeFormat(t.date, { dateStyle: 'medium', timeStyle: 'short' });
+const errorText = (code) => t.errors[code] || t.errors.default;
+const SEEN_KEY = 'velarys-seen';
 
-function updateCounter() {
-  const n = chars(message.value.trim());
-  counter.textContent = t.counter(n);
-  counter.classList.toggle('over', n > MAX_CHARS);
-}
-
-function updatePlaceholder() {
-  message.placeholder = kind() === 'assistance' ? t.placeholderAssistance : t.placeholderEvolution;
-}
+let tickets = [];
+let openTicketId = null;
 
 function setStatus(el, text, tone) {
   el.textContent = text || '';
   el.dataset.tone = tone || '';
 }
 
-function errorText(code) {
-  return t.errors[code] || t.errors.default;
-}
-
-async function api(method, body) {
-  const res = await fetch('api/tickets', {
+async function api(method, path, body) {
+  const res = await fetch(path, {
     method,
     headers: body ? { 'content-type': 'application/json', 'x-velarys-panel': '1' } : {},
     body: body ? JSON.stringify(body) : undefined,
@@ -137,83 +167,238 @@ async function api(method, body) {
   return data;
 }
 
-function badge(ticket) {
-  const span = document.createElement('span');
-  span.className = `badge badge-${ticket.status}`;
-  let label = t.status[ticket.status] || ticket.status;
-  if (ticket.status === 'closed' && ticket.outcome) {
-    const o = ticket.outcome === 'done' ? t.outcome.done[ticket.kind] : t.outcome.declined;
-    label = `${label}, ${o}`;
+// Réponses déjà vues, pour signaler « Nouvelle réponse » : confort local, jamais indispensable.
+function seen() {
+  try {
+    return JSON.parse(localStorage.getItem(SEEN_KEY) || '{}');
+  } catch {
+    return {};
   }
-  span.textContent = label;
+}
+function markSeen(ticket) {
+  try {
+    const s = seen();
+    s[ticket.id] = lastVelarys(ticket)?.id || null;
+    localStorage.setItem(SEEN_KEY, JSON.stringify(s));
+  } catch {
+    /* stockage indisponible : on affiche seulement moins d'indices */
+  }
+}
+const lastVelarys = (ticket) => [...ticket.thread].reverse().find((m) => m.author === 'velarys' && m.state === 'ok');
+const hasNewReply = (ticket) => {
+  const last = lastVelarys(ticket);
+  return Boolean(last) && seen()[ticket.id] !== last.id;
+};
+
+function statusLabel(ticket) {
+  if (ticket.status === 'closed' && ticket.outcome) {
+    return ticket.outcome === 'done' ? t.outcome.done[ticket.kind] : t.outcome.declined;
+  }
+  return t.status[ticket.status] || ticket.status;
+}
+
+function pill(ticket) {
+  const span = document.createElement('span');
+  span.className = `pill pill-${ticket.status}`;
+  span.textContent = statusLabel(ticket);
   return span;
 }
 
-function renderTickets(tickets) {
+function messageText(m) {
+  if (m.template) return t.templates[m.template] || '';
+  return m.text;
+}
+
+// --- Liste -------------------------------------------------------------------------------------
+
+function renderList() {
+  const list = $('tickets');
   list.replaceChildren();
-  if (tickets.length === 0) {
-    setStatus(listStatus, t.empty);
-    return;
-  }
-  setStatus(listStatus, '');
-  const fmt = new Intl.DateTimeFormat(t.date, { dateStyle: 'medium', timeStyle: 'short' });
+  if (tickets.length === 0) return setStatus($('list-status'), t.empty);
+  setStatus($('list-status'), '');
   for (const ticket of tickets) {
     const li = document.createElement('li');
-    li.className = 'ticket';
-    const head = document.createElement('div');
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'ticket';
+    btn.addEventListener('click', () => openThread(ticket.id));
+
+    const head = document.createElement('span');
     head.className = 'ticket-head';
-    const meta = document.createElement('span');
-    meta.className = 'ticket-meta';
-    meta.textContent = `${t.kind[ticket.kind] || ticket.kind} · ${fmt.format(new Date(ticket.createdAt))}`;
-    head.append(meta, badge(ticket));
-    const text = document.createElement('p');
+    const kind = document.createElement('span');
+    kind.className = 'ticket-kind';
+    kind.textContent = t.kind[ticket.kind] || ticket.kind;
+    const date = document.createElement('span');
+    date.className = 'ticket-date';
+    date.textContent = fmtDate.format(new Date(ticket.createdAt));
+    head.append(kind, date, pill(ticket));
+
+    const text = document.createElement('span');
     text.className = ticket.text === null ? 'ticket-text muted' : 'ticket-text';
-    // textContent, jamais innerHTML : le texte est celui du client, il n'est jamais interprété.
+    // textContent, jamais innerHTML : aucun texte n'est interprété.
     text.textContent = ticket.text === null ? t.noText : ticket.text;
-    li.append(head, text);
+    btn.append(head, text);
+
+    if (hasNewReply(ticket)) {
+      const flag = document.createElement('span');
+      flag.className = 'new-reply';
+      flag.textContent = t.newReply;
+      btn.append(flag);
+    }
+    li.append(btn);
     list.append(li);
   }
 }
 
 async function refresh() {
-  if (!list.children.length) setStatus(listStatus, t.loading);
+  if (!tickets.length) setStatus($('list-status'), t.loading);
   try {
-    renderTickets(await api('GET'));
+    tickets = await api('GET', 'api/tickets');
+    renderList();
+    if (openTicketId) renderThread();
   } catch (error) {
-    list.replaceChildren();
-    setStatus(listStatus, error.code === 'not_enrolled' || error.code === 'revoked' ? errorText(error.code) : t.listError, 'warn');
+    $('tickets').replaceChildren();
+    setStatus($('list-status'), ['not_enrolled', 'revoked'].includes(error.code) ? errorText(error.code) : t.listError, 'warn');
   }
 }
 
-form.addEventListener('change', updatePlaceholder);
-message.addEventListener('input', () => {
-  updateCounter();
-  if (status.dataset.tone === 'ok') setStatus(status, '');
-});
+// --- Nouvelle demande --------------------------------------------------------------------------
 
-form.addEventListener('submit', async (event) => {
+let newKind = 'assistance';
+
+function updateCounter() {
+  const n = chars($('new-message').value.trim());
+  $('new-counter').textContent = t.counter(n);
+  $('new-counter').classList.toggle('over', n > MAX_CHARS);
+}
+
+function openNew(kind) {
+  newKind = kind;
+  $('new-title').textContent = t.newTitle[kind];
+  $('new-label').textContent = t.newLabel[kind];
+  $('new-message').value = '';
+  setStatus($('new-status'), '');
+  updateCounter();
+  $('new-dialog').showModal();
+  $('new-message').focus();
+}
+
+for (const btn of document.querySelectorAll('.action[data-kind]')) {
+  if (!btn.disabled) btn.addEventListener('click', () => openNew(btn.dataset.kind));
+}
+$('new-message').addEventListener('input', updateCounter);
+
+$('new-form').addEventListener('submit', async (event) => {
   event.preventDefault();
-  const text = message.value.trim();
-  if (!text) return setStatus(status, t.errors.empty, 'warn');
-  if (chars(text) > MAX_CHARS) return setStatus(status, t.errors.message_too_long, 'warn');
-  sendBtn.disabled = true;
-  sendBtn.textContent = t.sending;
-  setStatus(status, '');
+  const text = $('new-message').value.trim();
+  if (!text) return setStatus($('new-status'), t.errors.empty, 'warn');
+  if (chars(text) > MAX_CHARS) return setStatus($('new-status'), t.errors.message_too_long, 'warn');
+  const send = $('new-send');
+  send.disabled = true;
+  send.textContent = t.sending;
   try {
-    await api('POST', { kind: kind(), message: text });
-    message.value = '';
-    updateCounter();
-    setStatus(status, t.sent, 'ok');
+    await api('POST', 'api/tickets', { kind: newKind, message: text });
+    $('new-dialog').close();
+    setStatus($('list-status'), t.sent, 'ok');
     await refresh();
+    setStatus($('list-status'), t.sent, 'ok');
   } catch (error) {
-    setStatus(status, errorText(error.code), 'warn');
+    setStatus($('new-status'), errorText(error.code), 'warn');
   } finally {
-    sendBtn.disabled = false;
-    sendBtn.textContent = t.send;
+    send.disabled = false;
+    send.textContent = t.send;
   }
 });
 
-updateCounter();
-updatePlaceholder();
+// --- Fil d'une demande -------------------------------------------------------------------------
+
+function bubble(author, when, text, extraClass) {
+  const li = document.createElement('li');
+  li.className = `bubble bubble-${author}${extraClass ? ` ${extraClass}` : ''}`;
+  const meta = document.createElement('span');
+  meta.className = 'bubble-meta';
+  meta.textContent = `${author === 'client' ? t.you : t.velarys} · ${fmtDate.format(new Date(when))}`;
+  const p = document.createElement('p');
+  p.textContent = text;
+  li.append(meta, p);
+  return li;
+}
+
+function renderThread() {
+  const ticket = tickets.find((x) => x.id === openTicketId);
+  if (!ticket) return;
+  $('thread-title').textContent = t.kind[ticket.kind] || ticket.kind;
+  $('thread-meta').replaceChildren(document.createTextNode(`${fmtDate.format(new Date(ticket.createdAt))} · `), pill(ticket));
+  const list = $('thread');
+  list.replaceChildren(bubble('client', ticket.createdAt, ticket.text === null ? t.noText : ticket.text, ticket.text === null ? 'muted' : ''));
+  let hidden = 0;
+  for (const m of ticket.thread) {
+    if (m.state === 'unverified') {
+      hidden += 1;
+      continue;
+    }
+    const text = m.state === 'missing' ? t.noText : messageText(m);
+    list.append(bubble(m.author, m.createdAt, text, m.state === 'missing' ? 'muted' : ''));
+  }
+  if (hidden) {
+    const li = document.createElement('li');
+    li.className = 'thread-warning';
+    li.textContent = t.unverified;
+    list.append(li);
+  }
+  const closed = ticket.status === 'closed';
+  $('reply-form').hidden = closed;
+  $('closed-note').hidden = !closed;
+  markSeen(ticket);
+  renderList();
+}
+
+function openThread(id) {
+  openTicketId = id;
+  $('reply-message').value = '';
+  setStatus($('reply-status'), '');
+  renderThread();
+  $('thread-dialog').showModal();
+  const list = $('thread');
+  list.scrollTop = list.scrollHeight;
+}
+
+$('reply-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const text = $('reply-message').value.trim();
+  if (!text) return setStatus($('reply-status'), t.errors.empty, 'warn');
+  if (chars(text) > MAX_CHARS) return setStatus($('reply-status'), t.errors.message_too_long, 'warn');
+  const send = $('reply-send');
+  send.disabled = true;
+  send.textContent = t.sending;
+  try {
+    await api('POST', `api/tickets/${openTicketId}/messages`, { message: text });
+    $('reply-message').value = '';
+    setStatus($('reply-status'), '');
+    await refresh();
+    const list = $('thread');
+    list.scrollTop = list.scrollHeight;
+  } catch (error) {
+    setStatus($('reply-status'), errorText(error.code), 'warn');
+  } finally {
+    send.disabled = false;
+    send.textContent = t.send;
+  }
+});
+
+// --- Fenêtres ----------------------------------------------------------------------------------
+
+for (const dialog of document.querySelectorAll('dialog')) {
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close(); // clic sur le fond
+  });
+  dialog.addEventListener('close', () => {
+    if (dialog.id === 'thread-dialog') openTicketId = null;
+  });
+}
+for (const btn of document.querySelectorAll('[data-close]')) {
+  btn.addEventListener('click', () => btn.closest('dialog').close());
+}
+
 refresh();
 setInterval(refresh, 60_000);

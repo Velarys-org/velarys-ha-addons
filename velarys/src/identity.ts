@@ -10,6 +10,11 @@ export interface HubIdentity {
   enrolledAt: string;
   /** Posé quand le central répond « révoqué » : il faut un nouveau code pour se réenrôler. */
   revokedAt?: string;
+  /**
+   * Clé X25519 du hub pour les réponses de Velarys (contrat 0.5.0) : le central les scelle pour elle.
+   * Créée au premier besoin, gardée ici donc hors des sauvegardes, comme la clé de signature.
+   */
+  replyKey?: { privateKey: string; publicKey: { kid: string; publicKey: string } };
 }
 
 export async function loadIdentity(file = IDENTITY_FILE): Promise<HubIdentity | null> {

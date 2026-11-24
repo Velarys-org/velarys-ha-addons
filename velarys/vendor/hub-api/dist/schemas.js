@@ -1,5 +1,5 @@
 import Type from 'typebox';
-import { HEARTBEAT_INTERVAL_MAX_SEC, HEARTBEAT_INTERVAL_MIN_SEC, HEARTBEAT_SCHEMA_V1, TICKET_SCHEMA_V1, } from './constants.js';
+import { HEARTBEAT_INTERVAL_MAX_SEC, HEARTBEAT_INTERVAL_MIN_SEC, HEARTBEAT_SCHEMA_V1, REPLY_TEMPLATES, TICKET_MESSAGE_SCHEMA_V1, TICKET_SCHEMA_V1, } from './constants.js';
 import { SEAL_ALG } from './seal.js';
 /** Clé publique Ed25519 du hub, au format JWK (RFC 8037). */
 export const Ed25519PublicJwk = Type.Object({
@@ -170,6 +170,28 @@ export const SealedText = Type.Object({
     ct: B64u(22, 10_752),
 }, strict);
 export const TicketCreateRequest = Type.Object({ schema: Type.Literal(TICKET_SCHEMA_V1), kind: TicketKind, sealed: SealedText }, strict);
+/**
+ * Message du fil d'une demande, tel que le hub le reçoit (contrat 0.5.0) :
+ * - du client : l'identifiant seul, le hub a gardé le texte ;
+ * - de Velarys, message type : un code de liste fermée, le hub affiche son propre texte ;
+ * - de Velarys, texte libre : scellé pour la clé de réponse de ce hub, et signé par passkey à
+ *   l'intérieur (`SignedReply`). Le hub ne l'affiche que si la signature est valide.
+ */
+export const TicketMessage = Type.Union([
+    Type.Object({ id: Type.String({ format: 'uuid' }), author: Type.Literal('client'), createdAt: Type.String({ format: 'date-time' }) }, strict),
+    Type.Object({
+        id: Type.String({ format: 'uuid' }),
+        author: Type.Literal('velarys'),
+        createdAt: Type.String({ format: 'date-time' }),
+        template: Type.Unsafe(Type.Union(REPLY_TEMPLATES.map((t) => Type.Literal(t)))),
+    }, strict),
+    Type.Object({
+        id: Type.String({ format: 'uuid' }),
+        author: Type.Literal('velarys'),
+        createdAt: Type.String({ format: 'date-time' }),
+        sealed: Type.Object({ kid: B64u(16, 16), enc: B64u(43, 43), ct: B64u(22, 16_384) }, strict),
+    }, strict),
+]);
 /** Ce que le hub sait d'une demande : jamais le texte (il le garde de son côté), jamais de note. */
 export const TicketSummary = Type.Object({
     id: Type.String({ format: 'uuid' }),
@@ -178,11 +200,31 @@ export const TicketSummary = Type.Object({
     outcome: TicketOutcome,
     createdAt: Type.String({ format: 'date-time' }),
     updatedAt: Type.String({ format: 'date-time' }),
+    /** Fil (contrat 0.5.0), renvoyé seulement au hub qui a donné sa clé de réponse. */
+    messages: Type.Optional(Type.Array(TicketMessage, { maxItems: 200 })),
 }, strict);
 export const TicketCreateResponse = Type.Object({ ticket: TicketSummary }, strict);
-/** Corps de la liste : vide, la requête est signée par le hub qui demande les siennes. */
-export const TicketListRequest = Type.Object({}, strict);
+/**
+ * Corps de la liste, signé par le hub qui demande les siennes. `replyKey` (contrat 0.5.0) : clé
+ * publique X25519 du hub, pour que le central lui scelle les réponses libres ; sa présence demande
+ * aussi le fil des messages. La signature du hub empêche le tunnel de la remplacer.
+ */
+export const TicketListRequest = Type.Object({ replyKey: Type.Optional(Type.Object({ kid: B64u(16, 16), publicKey: B64u(43, 43) }, strict)) }, strict);
 export const TicketListResponse = Type.Object({ tickets: Type.Array(TicketSummary, { maxItems: 50 }) }, strict);
+export const TicketMessageCreateRequest = Type.Object({ schema: Type.Literal(TICKET_MESSAGE_SCHEMA_V1), ticketId: Type.String({ format: 'uuid' }), sealed: SealedText }, strict);
+export const TicketMessageCreateResponse = Type.Object({
+    message: Type.Object({ id: Type.String({ format: 'uuid' }), author: Type.Literal('client'), createdAt: Type.String({ format: 'date-time' }) }, strict),
+}, strict);
+/** Passkeys de signature des réponses, lues seulement hors production (épinglées sinon). */
+export const ReplyKeysResponse = Type.Object({
+    keys: Type.Array(Type.Object({
+        credentialId: B64u(16, 1024),
+        alg: Type.Union([Type.Literal(-7), Type.Literal(-8)]),
+        publicKey: B64u(40, 512),
+        rpIdHash: B64u(43, 43),
+        originHash: B64u(43, 43),
+    }, strict), { maxItems: 16 }),
+}, strict);
 /** Clé publique de scellement du central. Lue seulement hors production : en production, elle est épinglée. */
 export const SealKeyResponse = Type.Object({ alg: Type.Literal(SEAL_ALG), kid: B64u(16, 16), publicKey: B64u(43, 43) }, strict);
 /** Erreurs typées : l'add-on agit selon `error`, jamais selon le message. */
@@ -203,6 +245,9 @@ export const HubErrorCode = Type.Union([
     Type.Literal('undecryptable'),
     Type.Literal('message_too_long'),
     Type.Literal('rate_limited'),
+    // Fil des demandes (contrat 0.5.0)
+    Type.Literal('unknown_ticket'),
+    Type.Literal('ticket_closed'),
 ]);
 export const HubError = Type.Object({
     error: HubErrorCode,

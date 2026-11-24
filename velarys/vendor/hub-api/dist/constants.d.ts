@@ -1,5 +1,5 @@
 /** Version du contrat, recopiée dans l'add-on avec le package vendorisé. */
-export declare const HUB_API_VERSION = "0.4.0";
+export declare const HUB_API_VERSION = "0.5.0";
 /** Routes publiques, les seules que le tunnel Cloudflare publie (préfixe `/v1/hub/`). */
 export declare const HUB_PATHS: {
     readonly enroll: '/v1/hub/enroll';
@@ -9,6 +9,9 @@ export declare const HUB_PATHS: {
     readonly tickets: '/v1/hub/tickets';
     readonly ticketList: '/v1/hub/tickets/list';
     readonly sealKey: '/v1/hub/seal-key';
+    /** Fil d'une demande (contrat 0.5.0) : message du client, passkeys de signature des réponses. */
+    readonly ticketMessages: '/v1/hub/tickets/messages';
+    readonly replyKeys: '/v1/hub/reply-keys';
 };
 /** Schémas de battement que le central accepte. Le central fait autorité : il en ajoute, il en retire. */
 export declare const HEARTBEAT_SCHEMA_V1 = "velarys.heartbeat/1";
@@ -34,3 +37,14 @@ export declare const TICKET_SCHEMA_V1 = "velarys.ticket/1";
 export declare const TICKET_MESSAGE_MAX_CHARS = 2000;
 /** Plafond anti-abus de demandes par hub sur 24 h glissantes. */
 export declare const TICKETS_PER_HUB_PER_DAY = 5;
+/** Message ajouté par le client au fil d'une demande (contrat 0.5.0). */
+export declare const TICKET_MESSAGE_SCHEMA_V1 = "velarys.ticket-message/1";
+/** Plafond anti-abus de messages ajoutés par hub sur 24 h glissantes (premières demandes non comprises). */
+export declare const TICKET_MESSAGES_PER_HUB_PER_DAY = 20;
+/**
+ * Messages types de Velarys : le central n'envoie que le code, le hub affiche son propre texte.
+ * Liste fermée, sans signature (même niveau de confiance que les statuts). Ajouter un code = le
+ * traduire dans le panneau de l'add-on, et le publier avant que l'admin ne l'envoie.
+ */
+export declare const REPLY_TEMPLATES: readonly ['received', 'need_details', 'checking', 'will_call', 'visit_needed', 'fixed', 'quote_coming', 'not_possible'];
+export type ReplyTemplate = (typeof REPLY_TEMPLATES)[number];

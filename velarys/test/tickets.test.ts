@@ -14,10 +14,16 @@ import {
   publicKeyFromJwk,
   TICKET_MESSAGE_MAX_CHARS,
   TicketCreateRequest,
+  TicketListRequest,
+  TicketMessageCreateRequest,
+  sealText,
   verifyRequest,
+  type ReplyKey,
   type SealPublicKey,
+  type SignedReply,
   type TicketSummary,
 } from '@velarys/hub-api';
+import { FakeAuthenticator } from '@velarys/hub-api/testing';
 import type { KeyObject } from 'node:crypto';
 import type { HubIdentity } from '../src/identity.js';
 import { setLogLevel } from '../src/log.js';
@@ -40,6 +46,10 @@ class TicketCentral {
   tickets: (TicketSummary & { hubId: string })[] = [];
   createReply: { status: number; body: unknown } | null = null;
   sealKeyStatus = 200;
+  /** Fil par demande, tel que le central le garde. */
+  threads = new Map<string, ({ id: string; createdAt: string } & ({ author: 'client' } | { author: 'velarys'; template: string } | { author: 'velarys'; signed: SignedReply }))[]>();
+  replyKeys: ReplyKey[] = [];
+  lastReplyKey: unknown = undefined;
 
   async start() {
     this.seal = await generateSealKeyPair();
@@ -55,6 +65,7 @@ class TicketCentral {
           if (this.sealKeyStatus !== 200) return send(this.sealKeyStatus, { error: 'tickets_disabled', message: 'coupé' });
           return send(200, { alg: 'hpke-x25519-hkdfsha256-aes128gcm', ...this.seal.publicKey });
         }
+        if (req.method === 'GET' && req.url === HUB_PATHS.replyKeys) return send(200, { keys: this.replyKeys });
         const raw = Buffer.concat(chunks);
         const verified = await verifyRequest(
           { method: req.method!, url: `http://${req.headers.host}${req.url}`, headers: req.headers, body: raw },
@@ -73,7 +84,37 @@ class TicketCentral {
           return send(201, { ticket });
         }
         if (req.url === HUB_PATHS.ticketList) {
-          return send(200, { tickets: this.tickets.filter((t) => t.hubId === verified.keyId).map(({ hubId: _, ...t }) => t) });
+          if (!Value.Check(TicketListRequest, body)) return send(400, { error: 'invalid_request', message: 'hors contrat' });
+          this.lastReplyKey = body.replyKey;
+          const mine = this.tickets.filter((t) => t.hubId === verified.keyId).map(({ hubId: _, ...t }) => t);
+          if (!body.replyKey) return send(200, { tickets: mine });
+          const replyKey = body.replyKey;
+          const withThread = await Promise.all(
+            mine.map(async (t) => ({
+              ...t,
+              messages: await Promise.all(
+                (this.threads.get(t.id) ?? []).map(async (m) => {
+                  if ('signed' in m) {
+                    const sealed = await sealText(replyKey, JSON.stringify(m.signed), verified.keyId, `reply:${t.id}:${m.id}`);
+                    return { id: m.id, author: 'velarys', createdAt: m.createdAt, sealed };
+                  }
+                  return m;
+                }),
+              ),
+            })),
+          );
+          return send(200, { tickets: withThread });
+        }
+        if (req.url === HUB_PATHS.ticketMessages) {
+          if (!Value.Check(TicketMessageCreateRequest, body)) return send(400, { error: 'invalid_request', message: 'hors contrat' });
+          const ticket = this.tickets.find((t) => t.id === body.ticketId && t.hubId === verified.keyId);
+          if (!ticket) return send(404, { error: 'unknown_ticket', message: '' });
+          if (ticket.status === 'closed') return send(409, { error: 'ticket_closed', message: '' });
+          const text = await openSealedText(this.seal.privateKey, body.sealed, verified.keyId, `message:${body.ticketId}`);
+          this.received.push({ hubId: verified.keyId, kind: 'message', text });
+          const message = { id: crypto.randomUUID(), author: 'client' as const, createdAt: new Date().toISOString() };
+          this.threads.set(body.ticketId, [...(this.threads.get(body.ticketId) ?? []), message]);
+          return send(201, { message });
         }
         send(404, { error: 'not_found', message: '' });
       });
@@ -98,7 +139,14 @@ function enrolledIdentity(): HubIdentity {
 }
 
 function service() {
-  return new TicketService({ centralUrl: central.url, loadIdentity: async () => identity, file: join(dir, 'tickets.json') });
+  return new TicketService({
+    centralUrl: central.url,
+    loadIdentity: async () => identity,
+    saveIdentity: async (next) => {
+      identity = next;
+    },
+    file: join(dir, 'tickets.json'),
+  });
 }
 
 beforeEach(async () => {
@@ -174,6 +222,78 @@ describe('demandes depuis le hub', () => {
     const fetchImpl = (async () =>
       new Response(JSON.stringify({ alg: 'hpke-x25519-hkdfsha256-aes128gcm', kid: other.publicKey.kid, publicKey: central.seal.publicKey.publicKey }))) as typeof fetch;
     expect(await resolveSealKey(central.url, fetchImpl)).toMatchObject({ ok: false, error: 'rejected' });
+  });
+});
+
+describe('fil des demandes (contrat 0.5.0)', () => {
+  async function ticketWithThread() {
+    const tickets = service();
+    const created = await tickets.create('assistance', 'Le volet ne descend plus');
+    if (!created.ok) throw new Error('création');
+    return { tickets, ticketId: created.value.id };
+  }
+  const reply = (auth: FakeAuthenticator, ticketId: string, messageId: string, text: string, hubId = 'hub-1') =>
+    auth.sign({ v: 1, hubId, ticketId, messageId, createdAt: new Date().toISOString(), text });
+
+  it('le client ajoute un message scellé, et le relit dans le fil', async () => {
+    const { tickets, ticketId } = await ticketWithThread();
+    const added = await tickets.addMessage(ticketId, 'Seulement le soir.');
+    expect(added).toMatchObject({ ok: true });
+    expect(central.received.at(-1)).toEqual({ hubId: 'hub-1', kind: 'message', text: 'Seulement le soir.' });
+    const listed = await tickets.list();
+    expect(listed.ok && listed.value[0]!.thread).toEqual([expect.objectContaining({ author: 'client', text: 'Seulement le soir.', state: 'ok' })]);
+  });
+
+  it('crée et garde sa clé de réponse, et l’envoie dans la requête signée', async () => {
+    const { tickets } = await ticketWithThread();
+    await tickets.list();
+    const kid = identity!.replyKey!.publicKey.kid;
+    expect(central.lastReplyKey).toEqual(identity!.replyKey!.publicKey);
+    await tickets.list();
+    expect(identity!.replyKey!.publicKey.kid).toBe(kid);
+  });
+
+  it('affiche un message type par son code, et une réponse dont la signature est valide', async () => {
+    const { tickets, ticketId } = await ticketWithThread();
+    const auth = new FakeAuthenticator();
+    central.replyKeys = [auth.replyKey];
+    const id = crypto.randomUUID();
+    const now = new Date().toISOString();
+    central.threads.set(ticketId, [
+      { id: crypto.randomUUID(), author: 'velarys', createdAt: now, template: 'checking' },
+      { id, author: 'velarys', createdAt: now, signed: reply(auth, ticketId, id, 'Nous passons jeudi matin.') },
+    ]);
+    const listed = await tickets.list();
+    expect(listed.ok && listed.value[0]!.thread).toEqual([
+      expect.objectContaining({ author: 'velarys', template: 'checking', state: 'ok' }),
+      expect.objectContaining({ author: 'velarys', text: 'Nous passons jeudi matin.', signed: true, state: 'ok' }),
+    ]);
+  });
+
+  it('n’affiche jamais une réponse signée par une autre passkey, ou destinée à un autre hub', async () => {
+    const { tickets, ticketId } = await ticketWithThread();
+    const pinned = new FakeAuthenticator();
+    const intruder = new FakeAuthenticator();
+    central.replyKeys = [pinned.replyKey];
+    const a = crypto.randomUUID();
+    const b = crypto.randomUUID();
+    const now = new Date().toISOString();
+    central.threads.set(ticketId, [
+      { id: a, author: 'velarys', createdAt: now, signed: reply(intruder, ticketId, a, 'Appelez le 08 99 00 00 00.') },
+      { id: b, author: 'velarys', createdAt: now, signed: reply(pinned, ticketId, b, 'Pour un autre hub', 'hub-2') },
+    ]);
+    const listed = await tickets.list();
+    const thread = listed.ok ? listed.value[0]!.thread : [];
+    expect(thread.map((m) => [m.state, m.text])).toEqual([
+      ['unverified', null],
+      ['unverified', null],
+    ]);
+  });
+
+  it('refuse d’ajouter un message à une demande close', async () => {
+    const { tickets, ticketId } = await ticketWithThread();
+    central.tickets.find((t) => t.id === ticketId)!.status = 'closed';
+    expect(await tickets.addMessage(ticketId, 'encore')).toMatchObject({ ok: false, error: 'ticket_closed' });
   });
 });
 

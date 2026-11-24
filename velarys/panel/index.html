@@ -5,71 +5,113 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="referrer" content="no-referrer" />
     <title>Velarys</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="favicon.png" type="image/png" sizes="320x320" />
     <link rel="stylesheet" href="panel.css" />
   </head>
   <body>
     <main class="wrap">
       <header class="head">
-        <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
-          <path d="M3 3h26v16a10 10 0 0 1-10 10H3z" fill="currentColor" />
-          <path d="M9 9l7 14 7-14" fill="none" stroke="#2bf0a5" stroke-width="3" stroke-linejoin="round" />
-        </svg>
-        <div>
-          <h1>Velarys</h1>
-          <p class="sub" data-t="subtitle"></p>
-        </div>
+        <img class="tile" src="favicon.svg" alt="" width="44" height="44" />
+        <svg viewBox="0 0 1625.5 439.8" fill="currentColor" class="logo" role="img" aria-label="Velarys">
+  <path d="M0,21.7s66.9-.8,92.5-.8,33.4,18.7,47.4,42c14,23.3,67.1,108.8,67.1,108.8,0,0,21,33.3,47.2,36.6,21.5,2.8,31.2-1.7,31.2-1.7,0,0-29.1,68.4-35.9,78.3-6.1,8.9-18.8,22.1-49.1,22.1s-44.4-17.1-50.4-27.2C139.5,262.1,0,21.7,0,21.7Z"/>
+  <path d="M367,19.2c-38.6-6.3-78.1,14.1-94.3,51.7-16.2,37.6-3.9,80.3,27.2,104L367,19.2Z"/>
+  <path d="M535,84.8c-17.2-11-38.1-16.5-62.7-16.5s-44.3,5.1-61.8,15.3c-17.5,10.2-31.1,24.5-40.7,43-9.7,18.5-14.5,40.4-14.5,65.8s4.9,47.4,14.7,66c9.8,18.6,23.5,33,41.2,43,17.6,10.1,38.5,15.1,62.5,15.1s36.7-3.3,52.1-9.9c15.4-6.6,28.2-16.1,38.3-28.3,10.1-12.3,16.5-27,19.2-44.1h-62.5c-1.9,8.6-6.8,15.8-14.5,21.7-7.7,5.9-17.7,8.9-29.8,8.9s-27-5-36.4-14.9c-9.4-9.9-15.2-23.7-17.4-41.4h162.1c1.4-29.5-2.3-54.7-11-75.7-8.7-21-21.7-37-38.9-48ZM422.7,167.5c2.2-14.6,7.7-26.3,16.5-35,8.8-8.7,20-13,33.5-13s21.5,3.7,30.6,11c9.1,7.3,14.2,19.6,15.3,37h-96Z"/>
+  <path d="M690.7,247.4c-3.3-3.3-5-7.6-5-12.8V0h-67v246.1c0,19.3,5.9,34.8,17.6,46.5,11.7,11.7,27.2,17.6,46.5,17.6h33.1v-57.9h-12.8c-5,0-9.1-1.7-12.4-5Z"/>
+  <path d="M915.7,101.8c-7.4-10.5-17.2-18.7-29.2-24.6-12-5.9-25.7-8.9-41.2-8.9s-37.9,5.2-53.4,15.5c-15.4,10.3-27.6,24.7-36.4,43-8.8,18.3-13.2,39.5-13.2,63.5s4.5,46.3,13.6,65.4c9.1,19,21.7,33.9,37.8,44.7,16.1,10.8,34.7,16.1,55.6,16.1s26.5-3.3,38.1-9.9c11.6-6.6,21-15.7,28.1-27.3l3.7,31h55.4V74.5h-55.4l-3.7,27.3ZM898.4,239.5c-9.1,12.1-21.4,18.2-36.8,18.2s-28.1-6.1-37.2-18.2c-9.1-12.1-13.7-28.5-13.7-49.2s4.6-37,13.7-49,21.5-18,37.2-18,27.7,6,36.8,18,13.7,28.3,13.7,49-4.6,37.1-13.7,49.2Z"/>
+  <path d="M1123.4,68.3c-34.2,0-60.5,9.1-78.8,27.3-18.3,18.2-27.5,44.3-27.5,78.2v136.5h67v-136.1c0-13.2,2.3-23.3,6.8-30.2,4.5-6.9,10.5-11.6,18-14.1,7.4-2.5,15.4-3.7,24-3.7s11,.3,15.7,1c4.7.7,9.6,1.4,14.9,2.3v-57.5c-7.7-1.7-15.4-2.7-23.2-3.1-7.7-.4-13.4-.6-17-.6Z"/>
+  <path d="M1352.1,74.5l-51.7,130.7-52.1-130.7h-70.3l87.3,218.8-5.9,15-53.8,130.6c38.7,5.7,77.8-15.4,93.4-53.2.9-2.1,1.6-4.3,2.3-6.4l120.7-304.9h-69.9Z"/>
+  <path d="M1613.3,197.3c-8.1-10.8-21.2-18.7-39.1-24-4.1-1.4-9.4-2.8-15.7-4.3-6.3-1.5-12.8-3.1-19.2-4.8-6.5-1.7-12.1-3-16.8-4.1-12.7-3.6-21.2-7.1-25.6-10.5-4.4-3.4-6.6-7.7-6.6-12.6,0-7.4,3.4-12.8,10.3-16.1,6.9-3.3,13.8-5,20.7-5,9.9,0,18.5,2.8,25.9,8.3,7.3,5.5,11,12.4,11,20.7h62.9c0-15.2-4.1-28.5-12.4-39.9-8.3-11.4-19.6-20.4-33.9-26.9-14.3-6.5-30.8-9.7-49.2-9.7s-22.3,1.4-33.7,4.1c-11.4,2.8-22,7.2-31.6,13.4-9.7,6.2-17.4,14.4-23.2,24.6-5.8,10.2-8.7,22.8-8.7,37.6s2.4,23.9,7.2,32.1c4.8,8.1,11.2,14.5,19,19.2,7.9,4.7,16.5,8.7,25.9,12,8,2.8,15.5,5,22.5,6.8,7,1.8,15.2,3.8,24.6,6,13.2,3.3,22.3,6.3,27.1,9.1,4.8,2.8,7.2,6.9,7.2,12.4s-3.2,12.7-9.5,16.5c-6.3,3.9-14.3,5.8-24,5.8s-20.3-2.8-27.7-8.3c-7.4-5.5-12.3-14.2-14.5-26.1h-59.2c0,25.6,9.1,45.8,27.3,60.6,18.2,14.8,43.2,22.1,74.9,22.1s54-6.9,70.9-20.7c17-13.8,25.4-33.1,25.4-57.9s-4.1-29.8-12.2-40.5Z"/>
+</svg>
+        <p class="sub" data-t="subtitle"></p>
       </header>
 
-      <section class="card">
-        <p class="intro" data-t="intro"></p>
+      <h1 class="title" data-t="title"></h1>
 
-        <form id="form" novalidate>
-          <fieldset class="kinds">
-            <legend class="visually-hidden" data-t="kindLegend"></legend>
-            <label class="kind">
-              <input type="radio" name="kind" value="assistance" checked />
-              <span class="kind-body">
-                <span class="kind-title" data-t="kindAssistance"></span>
-                <span class="kind-hint" data-t="kindAssistanceHint"></span>
-              </span>
-            </label>
-            <label class="kind">
-              <input type="radio" name="kind" value="evolution" />
-              <span class="kind-body">
-                <span class="kind-title" data-t="kindEvolution"></span>
-                <span class="kind-hint" data-t="kindEvolutionHint"></span>
-              </span>
-            </label>
-          </fieldset>
-
-          <div class="field">
-            <label for="message" data-t="messageLabel"></label>
-            <textarea id="message" name="message" rows="6" maxlength="4000" required></textarea>
-            <div class="field-foot">
-              <span class="hint" data-t="privacyHint"></span>
-              <span class="counter" id="counter" aria-live="polite"></span>
-            </div>
-          </div>
-
-          <div class="urgent" role="note">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 1 21h22L12 2zm1 15h-2v-2h2v2zm0-4h-2V9h2v4z" fill="currentColor" /></svg>
-            <p><strong data-t="urgentTitle"></strong> <span data-t="urgentText"></span></p>
-          </div>
-
-          <div class="actions">
-            <button type="submit" class="btn" id="send" data-t="send"></button>
-            <p class="status" id="status" role="status" aria-live="polite"></p>
-          </div>
-          <p class="fine" data-t="encryption"></p>
-        </form>
+      <!-- Actions : trois grandes cartes, pictogrammes pleins, une phrase chacune. -->
+      <section class="actions-grid" aria-labelledby="actions-title">
+        <h2 id="actions-title" class="visually-hidden" data-t="actionsTitle"></h2>
+        <button type="button" class="action" data-kind="assistance">
+          <span class="action-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 2 1 21h22L12 2zm1 15h-2v-2h2v2zm0-4h-2V9h2v4z" /></svg>
+          </span>
+          <span class="action-title" data-t="ctaAssistance"></span>
+          <span class="action-hint" data-t="ctaAssistanceHint"></span>
+        </button>
+        <button type="button" class="action" data-kind="evolution">
+          <span class="action-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z" /></svg>
+          </span>
+          <span class="action-title" data-t="ctaEvolution"></span>
+          <span class="action-hint" data-t="ctaEvolutionHint"></span>
+        </button>
+        <button type="button" class="action" data-kind="intervention" disabled aria-describedby="soon">
+          <span class="action-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12.65 10A5.99 5.99 0 0 0 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6a5.99 5.99 0 0 0 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" /></svg>
+          </span>
+          <span class="action-title" data-t="ctaIntervention"></span>
+          <span class="action-hint" data-t="ctaInterventionHint"></span>
+          <span class="soon" id="soon" data-t="soon"></span>
+        </button>
       </section>
 
-      <section class="card">
-        <h2 data-t="listTitle"></h2>
+      <section class="requests" aria-labelledby="list-title">
+        <h2 id="list-title" data-t="listTitle"></h2>
         <p class="status" id="list-status" role="status"></p>
         <ul class="tickets" id="tickets"></ul>
       </section>
+
+      <p class="urgent-line"><strong data-t="urgentTitle"></strong> <span data-t="urgentText"></span></p>
     </main>
+
+    <!-- Nouvelle demande -->
+    <dialog id="new-dialog" aria-labelledby="new-title">
+      <form id="new-form" method="dialog" novalidate>
+        <div class="dialog-head">
+          <h2 id="new-title"></h2>
+          <button type="button" class="close" data-close aria-label="Fermer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+          </button>
+        </div>
+        <label for="new-message" class="field-label" id="new-label"></label>
+        <textarea id="new-message" rows="7" maxlength="4000"></textarea>
+        <div class="field-foot">
+          <span data-t="privacyHint"></span>
+          <span class="counter" id="new-counter" aria-live="polite"></span>
+        </div>
+        <p class="urgent" role="note"><strong data-t="urgentTitle"></strong> <span data-t="urgentText"></span></p>
+        <p class="status" id="new-status" role="status" aria-live="polite"></p>
+        <div class="dialog-actions">
+          <button type="button" class="btn btn-ghost" data-close data-t="cancel"></button>
+          <button type="submit" class="btn" id="new-send" data-t="send"></button>
+        </div>
+        <p class="fine" data-t="encryption"></p>
+      </form>
+    </dialog>
+
+    <!-- Une demande et son fil -->
+    <dialog id="thread-dialog" aria-labelledby="thread-title">
+      <div class="dialog-head">
+        <div>
+          <h2 id="thread-title"></h2>
+          <p class="thread-meta" id="thread-meta"></p>
+        </div>
+        <button type="button" class="close" data-close aria-label="Fermer">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+        </button>
+      </div>
+      <ol class="thread" id="thread"></ol>
+      <form id="reply-form" novalidate>
+        <label for="reply-message" class="field-label" data-t="replyLabel"></label>
+        <textarea id="reply-message" rows="3" maxlength="4000"></textarea>
+        <p class="status" id="reply-status" role="status" aria-live="polite"></p>
+        <div class="dialog-actions">
+          <button type="submit" class="btn" id="reply-send" data-t="send"></button>
+        </div>
+      </form>
+      <p class="closed-note" id="closed-note" data-t="closedNote"></p>
+    </dialog>
+
     <noscript>Velarys&nbsp;: JavaScript est nécessaire pour envoyer une demande.</noscript>
     <script src="panel.js"></script>
   </body>

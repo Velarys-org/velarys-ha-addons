@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.0-beta.3
+
+Canal bêta seulement.
+
+- Panneau repensé pour être simple : trois grandes actions (signaler un problème, proposer une idée,
+  demander une intervention, cette dernière bientôt disponible), puis la liste de vos demandes.
+- Chaque demande devient une conversation : réponses de Velarys, et vos précisions tant qu'elle est
+  ouverte. Une réponse écrite par Velarys n'est affichée que si sa signature est vérifiée par la
+  machine.
+- Logo et icône de Velarys dans le panneau ; icône « V » dans la barre latérale.
+
 ## 0.3.0-beta.2
 
 Canal bêta seulement.

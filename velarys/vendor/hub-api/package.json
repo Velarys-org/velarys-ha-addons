@@ -1,6 +1,6 @@
 {
   "name": "@velarys/hub-api",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Contrat de l'API hub ↔ central Velarys : schémas, signature RFC 9421, empreinte RFC 9530.",
   "license": "MIT",
   "type": "module",
@@ -10,6 +10,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./testing": {
+      "types": "./dist/testing.d.ts",
+      "default": "./dist/testing.js"
     }
   },
   "files": [

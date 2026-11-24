@@ -24,6 +24,8 @@ const STATIC: Record<string, { file: string; type: string }> = {
   '/index.html': { file: 'index.html', type: 'text/html; charset=utf-8' },
   '/panel.css': { file: 'panel.css', type: 'text/css; charset=utf-8' },
   '/panel.js': { file: 'panel.js', type: 'text/javascript; charset=utf-8' },
+  '/favicon.svg': { file: 'favicon.svg', type: 'image/svg+xml' },
+  '/favicon.png': { file: 'favicon.png', type: 'image/png' },
 };
 
 const SECURITY_HEADERS = {
@@ -40,6 +42,8 @@ const STATUS_FOR: Record<TicketError, number> = {
   message_too_long: 400,
   tickets_disabled: 503,
   rate_limited: 429,
+  unknown_ticket: 404,
+  ticket_closed: 409,
   unreachable: 502,
   rejected: 502,
 };
@@ -114,6 +118,16 @@ export function createPanelServer(options: PanelOptions): Server {
         const body = (await readBody(req)) as { kind?: unknown; message?: unknown } | null;
         if (!body || !isTicketKind(body.kind) || typeof body.message !== 'string') return send(res, 400, { error: 'invalid' });
         return sendResult(res, await options.tickets.create(body.kind, body.message), 201);
+      }
+
+      const thread = /^\/api\/tickets\/([0-9a-f-]{36})\/messages$/i.exec(path);
+      if (thread && req.method === 'POST') {
+        if (req.headers[PANEL_CSRF_HEADER] !== '1' || !req.headers['content-type']?.startsWith('application/json')) {
+          return send(res, 403, { error: 'forbidden' });
+        }
+        const body = (await readBody(req)) as { message?: unknown } | null;
+        if (!body || typeof body.message !== 'string') return send(res, 400, { error: 'invalid' });
+        return sendResult(res, await options.tickets.addMessage(thread[1]!, body.message), 201);
       }
 
       if (path === '/api/version' && req.method === 'GET') return send(res, 200, { version: options.agentVersion });

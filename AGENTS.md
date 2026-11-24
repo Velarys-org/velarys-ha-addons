@@ -29,6 +29,8 @@ ici : ce dépôt ne porte ni chemin local, ni infrastructure, ni donnée client.
   dans `probeErrors`, jamais un battement bloqué.
 - **La clé privée ne sort pas du hub** : `/data/identity/` est exclu des sauvegardes
   (`backup_exclude` dans `config.yaml`, deux motifs car le Supervisor compare au chemin complet).
+- **Icône de barre latérale** : `panel_icon` n'accepte qu'une icône MDI (vérifié dans le
+  Supervisor) ; `mdi:alpha-v-box` faute de mieux. La tuile de marque sert au panneau lui-même.
 - **Aucun port publié sur l'hôte**, uniquement du HTTPS sortant vers le central. Le panneau Velarys
   (ingress, `src/panel.ts`, port interne 8099) n'accepte que le proxy d'ingress du Supervisor
   (`172.30.32.2`), exige l'en-tête `x-velarys-panel` sur toute écriture et sert une CSP stricte
@@ -38,9 +40,16 @@ ici : ce dépôt ne porte ni chemin local, ni infrastructure, ni donnée client.
 - **Demandes (contrat 0.4.0)** : le texte du client est scellé sur le hub (HPKE, `seal.ts` du
   contrat) avant la signature. Pour le central de production, la clé de scellement est **épinglée**
   dans le contrat (`PINNED_SEAL_KEYS`), jamais lue sur le réseau : le tunnel pourrait la remplacer.
-  **Rien de libre ne redescend** : le hub ne reçoit que des statuts de listes fermées, et garde sa
-  propre copie du texte (`/data/tickets.json`) pour l'afficher. Pas de canal d'urgence, pas de délai
-  affiché : le panneau le dit.
+  Le hub garde sa propre copie de ce que le client écrit (`/data/tickets.json`) : le central ne lui
+  renvoie jamais ce texte. Pas de canal d'urgence, pas de délai affiché : le panneau le dit.
+- **Rien de libre ne s'affiche sans signature (contrat 0.5.0)** : une réponse de Velarys est soit un
+  message type (code de liste fermée, texte dans `panel/panel.js`, aligné sur l'admin), soit un texte
+  libre signé par passkey (WebAuthn), vérifié **sur le hub** contre `PINNED_REPLY_KEYS` avant tout
+  affichage. Une signature refusée = message masqué, jamais affiché « à tout hasard ». La réponse
+  arrive scellée pour la clé X25519 du hub (`identity.json`, hors sauvegardes, envoyée signée).
+- **Panneau pour des personnes peu techniques** : trois grandes actions en haut (problème, idée,
+  intervention, cette dernière désactivée « Bientôt » en attendant l'usecase d'accès distant), la
+  liste des demandes dessous, création et fil en fenêtres. Textes courts, aucun jargon.
 - **`velarys/apparmor.txt` confine l'agent** (note de sécurité 8/8) : lecture de `/app`, écriture dans
   `/data` seulement, aucun programme lancé hors Node, d'où l'`ENTRYPOINT` direct du `Dockerfile` (sans
   le `docker-entrypoint.sh` de l'image, qui passe par un shell). Toute fonction qui touche un nouveau

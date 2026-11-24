@@ -1,5 +1,5 @@
 name: Suivi et Maintenance (bêta)
-version: "0.3.0-beta.2"
+version: "0.3.0-beta.3"
 slug: velarys
 # Canal bêta : cette branche `beta` du dépôt, que seuls les hubs de test ajoutent
 # (`https://github.com/Velarys-org/velarys-ha-addons#beta`). Les clients suivent `main`.
@@ -17,7 +17,7 @@ boot: auto
 # l'ingress du Supervisor, jamais publié sur l'hôte ; réservé aux administrateurs de HA (défaut).
 ingress: true
 ingress_port: 8099
-panel_icon: mdi:lifebuoy
+panel_icon: mdi:alpha-v-box
 panel_title: Velarys
 # Lecture de l'état (versions, santé) et du proxy de Core pour savoir si Home Assistant répond.
 hassio_api: true
