@@ -49,7 +49,9 @@ ici : ce dépôt ne porte ni chemin local, ni infrastructure, ni donnée client.
   arrive scellée pour la clé X25519 du hub (`identity.json`, hors sauvegardes, envoyée signée).
 - **Panneau pour des personnes peu techniques** : trois grandes actions en haut (problème, idée,
   intervention, cette dernière désactivée « Bientôt » en attendant l'usecase d'accès distant), la
-  liste des demandes dessous, création et fil en fenêtres. Textes courts, aucun jargon.
+  liste des demandes dessous. Création en fenêtre ; une demande s'ouvre en **vue** du panneau
+  (`#/demande/<id>`, retour du navigateur compris), jamais en fenêtre (demande d'Arnaud). Dates
+  relatives (« il y a 5 min »), date exacte au survol. Textes courts, aucun jargon.
 - **`velarys/apparmor.txt` confine l'agent** (note de sécurité 8/8) : lecture de `/app`, écriture dans
   `/data` seulement, aucun programme lancé hors Node, d'où l'`ENTRYPOINT` direct du `Dockerfile` (sans
   le `docker-entrypoint.sh` de l'image, qui passe par un shell). Toute fonction qui touche un nouveau

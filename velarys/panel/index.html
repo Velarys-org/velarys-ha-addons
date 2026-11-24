@@ -26,6 +26,7 @@
         <p class="sub" data-t="subtitle"></p>
       </header>
 
+      <div id="view-home">
       <h1 class="title" data-t="title"></h1>
 
       <!-- Actions : trois grandes cartes, pictogrammes pleins, une phrase chacune. -->
@@ -60,6 +61,30 @@
         <p class="status" id="list-status" role="status"></p>
         <ul class="tickets" id="tickets"></ul>
       </section>
+      </div>
+
+      <!-- Détail d'une demande : une vue du panneau (#/demande/<id>), pas une fenêtre. -->
+      <section id="view-detail" class="detail" hidden aria-labelledby="thread-title">
+        <a href="#" class="back" id="back">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          <span data-t="back"></span>
+        </a>
+        <div class="detail-head">
+          <h1 class="title" id="thread-title"></h1>
+          <p class="thread-meta" id="thread-meta"></p>
+        </div>
+        <ol class="thread" id="thread"></ol>
+        <form id="reply-form" class="reply" novalidate>
+          <label for="reply-message" class="field-label" data-t="replyLabel"></label>
+          <textarea id="reply-message" rows="3" maxlength="4000"></textarea>
+          <p class="status" id="reply-status" role="status" aria-live="polite"></p>
+          <div class="dialog-actions">
+            <button type="submit" class="btn" id="reply-send" data-t="send"></button>
+          </div>
+        </form>
+        <p class="closed-note" id="closed-note" data-t="closedNote"></p>
+        <p class="status" id="detail-status" role="status"></p>
+      </section>
 
       <p class="urgent-line"><strong data-t="urgentTitle"></strong> <span data-t="urgentText"></span></p>
     </main>
@@ -89,28 +114,6 @@
       </form>
     </dialog>
 
-    <!-- Une demande et son fil -->
-    <dialog id="thread-dialog" aria-labelledby="thread-title">
-      <div class="dialog-head">
-        <div>
-          <h2 id="thread-title"></h2>
-          <p class="thread-meta" id="thread-meta"></p>
-        </div>
-        <button type="button" class="close" data-close aria-label="Fermer">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
-        </button>
-      </div>
-      <ol class="thread" id="thread"></ol>
-      <form id="reply-form" novalidate>
-        <label for="reply-message" class="field-label" data-t="replyLabel"></label>
-        <textarea id="reply-message" rows="3" maxlength="4000"></textarea>
-        <p class="status" id="reply-status" role="status" aria-live="polite"></p>
-        <div class="dialog-actions">
-          <button type="submit" class="btn" id="reply-send" data-t="send"></button>
-        </div>
-      </form>
-      <p class="closed-note" id="closed-note" data-t="closedNote"></p>
-    </dialog>
 
     <noscript>Velarys&nbsp;: JavaScript est nécessaire pour envoyer une demande.</noscript>
     <script src="panel.js"></script>

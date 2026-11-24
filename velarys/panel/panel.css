@@ -474,15 +474,57 @@ textarea:focus {
   font-size: 0.88rem;
 }
 
+/* --- Vue d'une demande --- */
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 24px;
+  padding: 8px 14px 8px 10px;
+  border-radius: 999px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.back:hover {
+  border-color: var(--ink-3);
+}
+
+.back:focus-visible {
+  outline: 2px solid var(--mint);
+  outline-offset: 2px;
+}
+
+.back svg {
+  width: 18px;
+  height: 18px;
+}
+
+.detail-head .title {
+  margin: 20px 0 4px;
+}
+
+.detail-head {
+  margin-bottom: 18px;
+}
+
+.reply {
+  padding: 18px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
 .thread {
   list-style: none;
-  margin: 0 0 14px;
-  padding: 2px;
+  margin: 0 0 18px;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  overflow-y: auto;
-  min-height: 80px;
 }
 
 .bubble {
@@ -499,7 +541,8 @@ textarea:focus {
 
 .bubble-client {
   align-self: flex-end;
-  background: var(--bg-soft);
+  background: var(--bg);
+  border: 1px solid var(--line);
 }
 
 .bubble-velarys {

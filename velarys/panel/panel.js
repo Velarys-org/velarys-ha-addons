@@ -9,7 +9,10 @@ const NB = ' ';
 const T = {
   fr: {
     subtitle: 'Suivi et maintenance',
-    title: `Besoin de Velarys${NB}?`,
+    title: `Comment pouvons-nous vous aider${NB}?`,
+    back: 'Vos demandes',
+    notFound: 'Cette demande est introuvable.',
+    justNow: 'à l’instant',
     actionsTitle: 'Que souhaitez-vous faire',
     ctaAssistance: 'Signaler un problème',
     ctaAssistanceHint: 'Quelque chose ne marche plus comme d’habitude.',
@@ -71,7 +74,10 @@ const T = {
   },
   en: {
     subtitle: 'Monitoring and maintenance',
-    title: 'Need Velarys?',
+    title: 'How can we help you?',
+    back: 'Your requests',
+    notFound: 'This request cannot be found.',
+    justNow: 'just now',
     actionsTitle: 'What would you like to do',
     ctaAssistance: 'Report a problem',
     ctaAssistanceHint: 'Something no longer works as usual.',
@@ -144,10 +150,34 @@ for (const el of document.querySelectorAll('[data-t]')) {
 const $ = (id) => document.getElementById(id);
 const chars = (text) => [...text].length;
 const fmtDate = new Intl.DateTimeFormat(t.date, { dateStyle: 'medium', timeStyle: 'short' });
+const rtfShort = new Intl.RelativeTimeFormat(t.date, { numeric: 'auto', style: 'short' });
+const rtfLong = new Intl.RelativeTimeFormat(t.date, { numeric: 'auto', style: 'long' });
+
+/** « il y a 5 min », « hier », « il y a 10 j » : la date exacte reste au survol. */
+function ago(iso) {
+  const sec = Math.round((new Date(iso).getTime() - Date.now()) / 1000);
+  const abs = Math.abs(sec);
+  if (abs < 45) return t.justNow;
+  if (abs < 3600) return rtfShort.format(Math.round(sec / 60), 'minute');
+  if (abs < 86400) return rtfShort.format(Math.round(sec / 3600), 'hour');
+  if (abs < 30 * 86400) return rtfShort.format(Math.round(sec / 86400), 'day');
+  if (abs < 365 * 86400) return rtfLong.format(Math.round(sec / (30 * 86400)), 'month');
+  return rtfLong.format(Math.round(sec / (365 * 86400)), 'year');
+}
+
+function timeEl(iso, className) {
+  const el = document.createElement('time');
+  if (className) el.className = className;
+  el.dateTime = iso;
+  el.title = fmtDate.format(new Date(iso));
+  el.textContent = ago(iso);
+  return el;
+}
 const errorText = (code) => t.errors[code] || t.errors.default;
 const SEEN_KEY = 'velarys-seen';
 
 let tickets = [];
+let loaded = false;
 let openTicketId = null;
 
 function setStatus(el, text, tone) {
@@ -221,17 +251,16 @@ function renderList() {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'ticket';
-    btn.addEventListener('click', () => openThread(ticket.id));
+    btn.addEventListener('click', () => {
+      location.hash = `#/demande/${ticket.id}`;
+    });
 
     const head = document.createElement('span');
     head.className = 'ticket-head';
     const kind = document.createElement('span');
     kind.className = 'ticket-kind';
     kind.textContent = t.kind[ticket.kind] || ticket.kind;
-    const date = document.createElement('span');
-    date.className = 'ticket-date';
-    date.textContent = fmtDate.format(new Date(ticket.createdAt));
-    head.append(kind, date, pill(ticket));
+    head.append(kind, timeEl(ticket.createdAt, 'ticket-date'), pill(ticket));
 
     const text = document.createElement('span');
     text.className = ticket.text === null ? 'ticket-text muted' : 'ticket-text';
@@ -254,6 +283,7 @@ async function refresh() {
   if (!tickets.length) setStatus($('list-status'), t.loading);
   try {
     tickets = await api('GET', 'api/tickets');
+    loaded = true;
     renderList();
     if (openTicketId) renderThread();
   } catch (error) {
@@ -317,7 +347,7 @@ function bubble(author, when, text, extraClass) {
   li.className = `bubble bubble-${author}${extraClass ? ` ${extraClass}` : ''}`;
   const meta = document.createElement('span');
   meta.className = 'bubble-meta';
-  meta.textContent = `${author === 'client' ? t.you : t.velarys} · ${fmtDate.format(new Date(when))}`;
+  meta.append(`${author === 'client' ? t.you : t.velarys} · `, timeEl(when));
   const p = document.createElement('p');
   p.textContent = text;
   li.append(meta, p);
@@ -326,9 +356,14 @@ function bubble(author, when, text, extraClass) {
 
 function renderThread() {
   const ticket = tickets.find((x) => x.id === openTicketId);
-  if (!ticket) return;
+  for (const el of ['thread-title', 'thread-meta', 'thread', 'reply-form', 'closed-note']) $(el).hidden = !ticket;
+  if (!ticket) {
+    setStatus($('detail-status'), tickets.length || loaded ? t.notFound : t.loading);
+    return;
+  }
+  setStatus($('detail-status'), '');
   $('thread-title').textContent = t.kind[ticket.kind] || ticket.kind;
-  $('thread-meta').replaceChildren(document.createTextNode(`${fmtDate.format(new Date(ticket.createdAt))} · `), pill(ticket));
+  $('thread-meta').replaceChildren(timeEl(ticket.createdAt), document.createTextNode(' · '), pill(ticket));
   const list = $('thread');
   list.replaceChildren(bubble('client', ticket.createdAt, ticket.text === null ? t.noText : ticket.text, ticket.text === null ? 'muted' : ''));
   let hidden = 0;
@@ -353,15 +388,28 @@ function renderThread() {
   renderList();
 }
 
-function openThread(id) {
+// --- Vues : l'accueil, ou une demande (#/demande/<id>), sans fenêtre ---------------------------
+
+function route() {
+  const match = /^#\/demande\/([0-9a-f-]{36})$/i.exec(location.hash);
+  const id = match ? match[1] : null;
+  if (id !== openTicketId) {
+    $('reply-message').value = '';
+    setStatus($('reply-status'), '');
+  }
   openTicketId = id;
-  $('reply-message').value = '';
-  setStatus($('reply-status'), '');
-  renderThread();
-  $('thread-dialog').showModal();
-  const list = $('thread');
-  list.scrollTop = list.scrollHeight;
+  $('view-home').hidden = Boolean(id);
+  $('view-detail').hidden = !id;
+  if (id) renderThread();
+  else renderList();
+  window.scrollTo(0, 0);
 }
+
+window.addEventListener('hashchange', route);
+$('back').addEventListener('click', (event) => {
+  event.preventDefault();
+  location.hash = '#/';
+});
 
 $('reply-form').addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -376,8 +424,6 @@ $('reply-form').addEventListener('submit', async (event) => {
     $('reply-message').value = '';
     setStatus($('reply-status'), '');
     await refresh();
-    const list = $('thread');
-    list.scrollTop = list.scrollHeight;
   } catch (error) {
     setStatus($('reply-status'), errorText(error.code), 'warn');
   } finally {
@@ -392,13 +438,12 @@ for (const dialog of document.querySelectorAll('dialog')) {
   dialog.addEventListener('click', (event) => {
     if (event.target === dialog) dialog.close(); // clic sur le fond
   });
-  dialog.addEventListener('close', () => {
-    if (dialog.id === 'thread-dialog') openTicketId = null;
-  });
 }
 for (const btn of document.querySelectorAll('[data-close]')) {
   btn.addEventListener('click', () => btn.closest('dialog').close());
 }
 
+route();
 refresh();
+// Toutes les minutes : nouvelles réponses, et les « il y a 5 min » qui vieillissent.
 setInterval(refresh, 60_000);

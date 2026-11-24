@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.0-beta.4
+
+Canal bêta seulement.
+
+- Une demande s'ouvre comme une page du panneau, avec un retour vers la liste, et non plus dans une
+  fenêtre.
+- Dates relatives (« il y a 5 min », « il y a 10 j ») ; la date exacte reste au survol.
+- Accueil : « Comment pouvons-nous vous aider ? ».
+
 ## 0.3.0-beta.3
 
 Canal bêta seulement.
