@@ -1,101 +1,16 @@
 # Changelog
 
-## 0.3.0-beta.12
+## 0.3.0
 
-Canal bêta seulement.
-
-- Une demande terminée depuis plus de 90 jours, sans nouveau message, passe dans les archives : elle
-  sort du carnet mais reste consultable sous « Afficher les archives ». Rien n'est effacé.
-
-## 0.3.0-beta.11
-
-Canal bêta seulement.
-
-- Les demandes fonctionnent avec le central Velarys de production : le texte est chiffré pour sa clé,
-  embarquée dans l'application, et une réponse écrite par Velarys ne s'affiche que si elle porte la
-  signature de la passkey de Velarys, elle aussi embarquée.
-
-## 0.3.0-beta.10
-
-Canal bêta seulement.
-
-- Vos demandes en un seul carnet : l'état en clair sur chaque ligne, les demandes en cours en haut,
-  les terminées rangées et repliées en bas du carnet.
-- Fenêtre de création plus claire, avec la garantie de chiffrement à côté du bouton d'envoi ; sur
-  téléphone, elle s'ouvre comme un panneau qui monte du bas.
-- L'avertissement « urgence » reste dans la fenêtre de création et sur la page d'une demande, plus
-  sur l'accueil.
-- Bas de page : la lettre d'information d'abord, les réseaux sociaux en simples liens.
-
-## 0.3.0-beta.9
-
-Canal bêta seulement.
-
-- L'avertissement « urgence » passe juste sous les deux actions, là où le client décide d'écrire.
-
-## 0.3.0-beta.8
-
-Canal bêta seulement.
-
-- « Suivre Velarys » sur un fond neutre, sans teinte ; le motif de la marque reste en filigrane.
-
-## 0.3.0-beta.7
-
-Canal bêta seulement.
-
-- Sous la liste des demandes : l'avertissement « urgence » en encadré, un filet, puis « Suivre
-  Velarys » sur un fond à part, avec le motif de la marque en filigrane.
-
-## 0.3.0-beta.6
-
-Canal bêta seulement.
-
-- Accueil resserré : « Signaler un problème » et « Demander une intervention » (bientôt).
-- Liens vers la lettre d'information et les réseaux sociaux de Velarys, en nouvel onglet.
-
-## 0.3.0-beta.5
-
-Canal bêta seulement.
-
-- Après l'envoi d'une demande, la confirmation s'affiche dans la fenêtre elle-même, avec « Voir ma
-  demande » et « Fermer ».
-
-## 0.3.0-beta.4
-
-Canal bêta seulement.
-
-- Une demande s'ouvre comme une page du panneau, avec un retour vers la liste, et non plus dans une
-  fenêtre.
-- Dates relatives (« il y a 5 min », « il y a 10 j ») ; la date exacte reste au survol.
-- Accueil : « Comment pouvons-nous vous aider ? ».
-
-## 0.3.0-beta.3
-
-Canal bêta seulement.
-
-- Panneau repensé pour être simple : trois grandes actions (signaler un problème, proposer une idée,
-  demander une intervention, cette dernière bientôt disponible), puis la liste de vos demandes.
-- Chaque demande devient une conversation : réponses de Velarys, et vos précisions tant qu'elle est
-  ouverte. Une réponse écrite par Velarys n'est affichée que si sa signature est vérifiée par la
-  machine.
-- Logo et icône de Velarys dans le panneau ; icône « V » dans la barre latérale.
-
-## 0.3.0-beta.2
-
-Canal bêta seulement.
-
-- Le panneau Velarys apparaît dans la barre latérale dès le premier démarrage (Home Assistant
-  l'installe masqué). Le masquer ensuite reste possible, et il ne revient pas.
-
-## 0.3.0-beta.1
-
-Canal bêta seulement.
-
-- Panneau « Velarys » dans la barre latérale de Home Assistant : une demande d'assistance ou une
-  idée d'évolution s'écrit là, et part chez Velarys avec l'état technique de l'installation.
-  Le message est chiffré sur le boîtier, et seul Velarys peut le lire ; le panneau affiche ensuite
-  le suivi de chaque demande (reçue, en cours, close).
-- Pas pour les urgences, et le panneau le dit : aucune permanence n'est assurée par ce canal.
+- Panneau Velarys dans la barre latérale de Home Assistant, réservé aux administrateurs : vous
+  signalez un problème en quelques mots, et la demande part avec l'état technique de l'installation.
+  Son texte est chiffré sur la machine pour le seul central Velarys.
+- Chaque demande s'ouvre comme une conversation : vous y lisez les réponses de Velarys et pouvez
+  ajouter des précisions tant qu'elle est ouverte. Une réponse écrite par Velarys ne s'affiche que si
+  la machine y vérifie elle-même la signature de Velarys.
+- Les demandes terminées depuis plus de 90 jours passent dans les archives, toujours consultables.
+- Le panneau rappelle qu'il n'est pas un canal d'urgence, et donne les liens vers la lettre
+  d'information et les réseaux sociaux de Velarys (ouverts dans un nouvel onglet).
 
 ## 0.2.0
 

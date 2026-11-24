@@ -1,9 +1,6 @@
-name: Suivi et Maintenance (bêta)
-version: "0.3.0-beta.12"
+name: Suivi et Maintenance
+version: "0.3.0"
 slug: velarys
-# Canal bêta : cette branche `beta` du dépôt, que seuls les hubs de test ajoutent
-# (`https://github.com/Velarys-org/velarys-ha-addons#beta`). Les clients suivent `main`.
-stage: experimental
 description: Velarys repère les pannes de votre installation, sans rien savoir de la vie du logement
 # Lien « Visitez la page … » de l'onglet Info : la page de suivi du site (noindex), pas le code.
 url: https://www.velarys.fr/suivi
